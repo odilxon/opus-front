@@ -1,0 +1,148 @@
+.calendar {
+  min-height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  flex-direction: column;
+  .fc .fc-toolbar {
+    flex-wrap: wrap;
+  }
+  .fc-button {
+    background-color: #f5f8fa !important;
+    border-color: #f5f8fa !important ;
+    color: #9092ad !important;
+    @media (max-width: 768px) {
+      margin: 4px 0 !important;
+    }
+  }
+  .fc-toolbar-title {
+    font-size: 1rem !important;
+    @media (min-width: 768px) {
+      font-size: 1.4rem !important;
+    }
+  }
+
+  label {
+    font-weight: 500;
+  }
+}
+.modal-dialog {
+  .modal-content {
+    input {
+      font-size: 14px !important;
+      border: none !important;
+      background-color: $opus-input !important;
+      font-weight: 500 !important;
+      &:focus,
+      &:hover {
+        background-color: $opus-input !important;
+      }
+    }
+  }
+}
+.btn-hist {
+  max-width: 180px !important;
+  overflow: hidden;
+  display: inline-block;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+// .table {
+//   @media (min-width: 991px) {
+//     overflow: hidden;
+//     width: 100%;
+//     min-height: 50px;
+//   }
+//   td,
+//   th {
+//     text-align: center;
+//   }
+
+//   .history {
+//     // position: relative;
+
+//     .history_table {
+//       table {
+//         width: 300px;
+//         @media (min-width: 768px) {
+//           width: 500px;
+//         }
+//       }
+//     }
+//   }
+// }
+
+.iconDiv {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    svg {
+      width: 30px;
+      margin: 2px;
+    }
+  }
+}
+
+// .history {
+//   position: relative;
+//   .history-table {
+//     transition: all 0.3s ease;
+//     transform: scale(0);
+//     position: absolute;
+//     background-color: #fff;
+//     top: 20px;
+//     left: -400px;
+//     z-index: 100;
+//     .date {
+//       font-size: 12px;
+//     }
+//     @media (min-width: 991px) {
+//       width: 600px;
+//     }
+//   }
+//   &:hover {
+//     .history-table {
+//       transform: scale(1);
+//     }
+//   }
+// .history-table.show {
+//   transform: scale(1);
+// }
+// }
+@media (min-width: 1200px) {
+  .modal-dialog {
+    max-width: 900px !important;
+    margin: 1.75rem auto;
+  }
+}
+.sts {
+  text-align: center;
+}
+.rib {
+  overflow: hidden;
+  position: relative;
+
+  &::before {
+    content: '';
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    bottom: -5px;
+    right: 20px;
+    background-color: $base-color;
+    clip-path: polygon(0 0, 0 100%, 100% 100%);
+  }
+}
+.fc-scrollgrid-sync-inner {
+  a {
+    text-decoration: none !important;
+  }
+}

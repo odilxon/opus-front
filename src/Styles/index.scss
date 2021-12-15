@@ -1,0 +1,32 @@
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700&family=Poppins:wght@400;500;600;800;900&display=swap');
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin: 0;
+  padding: 0;
+}
+body {
+  font-family: 'Poppins', sans-serif;
+  line-height: 1.5;
+  overflow-x: hidden;
+  background-color: #f5f8fa !important;
+}
+
+$base-color: rgba(16,120,98,1);
+$opus-input : #f1f7f5;
+@import 'LogIn';
+@import 'calendar';
+@import 'header';
+@import 'myprofil';
+@import 'custom';

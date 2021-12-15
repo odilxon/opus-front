@@ -1,0 +1,217 @@
+.userProfil {
+  .userInfo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    img {
+      width: 200px;
+      height: 200px;
+      object-fit: cover;
+      object-position: center;
+    }
+  }
+  .infos {
+    color: #181c32 !important;
+    h1.h2 {
+      font-size: 1.5rem !important;
+      font-weight: bold;
+      padding-top: 10px;
+      display: flex;
+      align-items: center;
+      svg {
+        margin-left: 4px;
+        margin-top: 6px;
+      }
+    }
+    p {
+      padding: 6px 0;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      span {
+        display: flex;
+        align-items: center;
+        padding: 2px 8px;
+        font-weight: 500;
+
+        @media (min-width: 768px) {
+          &:first-child {
+            padding-left: 0;
+          }
+        }
+
+        svg {
+          margin-right: 6px;
+          color: rgba(128, 128, 128, 0.6);
+        }
+      }
+    }
+    .progres {
+      svg {
+        height: 1.35rem;
+        width: 1.35rem;
+        margin-right: 4px;
+      }
+    }
+    .border-dashed {
+      border: 1px dashed rgba(128, 128, 128, 0.3) !important;
+    }
+  }
+}
+.profilDetails {
+  .detail {
+    .form-label {
+      padding-top: calc(0.75rem + 1px);
+      padding-bottom: calc(0.75rem + 1px);
+      margin-bottom: 0;
+      font-weight: 500;
+      line-height: 1.5;
+      color: #3f4254;
+      font-size: 1.075rem !important;
+    }
+
+    .image-input {
+      position: relative;
+      display: inline-block;
+      border-radius: 0.475rem;
+      background-repeat: no-repeat;
+      background-size: cover;
+
+      .image-wrapper {
+        border: 3px solid #fff;
+        box-shadow: 0 0.5rem 1.5rem 0.5rem rgba(0, 0, 0, 0.08);
+        border-radius: 0.475rem;
+        background-repeat: no-repeat;
+        background-size: cover;
+        height: 125px !important;
+        width: 125px !important;
+        position: relative;
+        img {
+          max-width: 100%;
+          height: 125px !important;
+          width: 125px !important;
+          object-fit: cover;
+          object-position: center;
+          max-height: 100%;
+          border-radius: 0.4rem;
+        }
+      }
+      .icon-pic {
+        border: 0;
+        border-radius: 50%;
+        cursor: pointer;
+        position: absolute;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        background-color: #fff;
+        width: 25px;
+        height: 25px;
+        transition: all 0.3s ease;
+        // position: relative;
+        .info {
+          min-width: 120px;
+          text-align: center;
+          align-items: center;
+          justify-content: center;
+          flex-wrap: wrap;
+          background-color: #eee;
+          position: absolute;
+          top: -42px;
+          left: -50px;
+          transition: all.3s ease;
+          font-weight: 500;
+          display: none;
+
+          &::after {
+            content: '';
+            display: inline-block;
+            width: 16px;
+            height: 10px;
+            background-color: #eee;
+
+            clip-path: polygon(100% 1%, 0 0, 50% 100%);
+            position: absolute;
+            bottom: -8px;
+            left: calc(50% - 5px);
+          }
+          &:hover {
+            color: #3f4254;
+          }
+        }
+
+        &:hover {
+          color: #009ef7;
+          .info {
+            display: flex;
+          }
+        }
+
+        svg {
+          padding: 0;
+          margin: 0;
+          line-height: 1;
+          font-size: 0.95rem !important;
+          vertical-align: middle;
+        }
+        input {
+          width: 0 !important;
+          height: 0 !important;
+          overflow: hidden;
+          opacity: 0;
+        }
+      }
+      .edit-icon {
+        top: -10px;
+        right: -10px;
+      }
+      .close-icon {
+        bottom: -10px;
+        right: -10px;
+      }
+    }
+  }
+
+  input {
+    font-size: 14px !important;
+    border: none !important;
+    background-color: $opus-input !important;
+    font-weight: 500 !important;
+    &:focus,
+    &:hover {
+      background-color: $opus-input !important;
+    }
+  }
+  .btn-account {
+    display: inline-block;
+    background-color: #e8f0fe !important;
+    font-weight: 500;
+    text-transform: capitalize;
+    color: #6c757d !important;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background-color: #d9e0ed !important;
+    }
+  }
+  .line {
+    border: 1px dotted #c8c9ca;
+  }
+}
+.admin-pic {
+  // background-color: yellow;
+  width: 200px !important;
+  height: 200px !important;
+  object-fit: cover;
+  object-position: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+.card-admin {
+  transition: all 0.3s ease;
+  cursor: pointer !important;
+  &:hover {
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.08);
+  }
+}
