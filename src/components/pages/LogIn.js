@@ -8,9 +8,11 @@ import { toast } from 'react-toastify';
 import { LoginUrl } from '../../service';
 import { useTranslation } from 'react-i18next';
 import Logo from '../../assets/images/logo.svg';
+import LoaderPage from '../LoaderPage';
 const LogIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loader, setLoader] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -20,6 +22,7 @@ const LogIn = () => {
   // const { user } = userInfo;
 
   const fetchUser = async (e) => {
+    setLoader(true);
     e.preventDefault();
     var bodyFormData = new FormData();
     bodyFormData.append('email', email);
@@ -77,6 +80,7 @@ const LogIn = () => {
         progress: undefined,
       });
     }
+    setLoader(false);
   };
 
   useEffect(() => {
@@ -92,7 +96,7 @@ const LogIn = () => {
         progress: undefined,
       });
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigate]);
 
   return (
@@ -157,6 +161,7 @@ const LogIn = () => {
           Contact Us
         </Link>
       </div> */}
+      {loader ? <LoaderPage /> : null}
     </div>
   );
 };

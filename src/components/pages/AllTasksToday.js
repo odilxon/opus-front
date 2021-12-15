@@ -19,6 +19,7 @@ import {
 import { defaultStyles, FileIcon } from 'react-file-icon';
 import { useTranslation } from 'react-i18next';
 import { MultiSelect } from 'react-multi-select-component';
+import LoaderPage from '../LoaderPage';
 
 const AllTasksToday = () => {
   const [clickHist, setClickHist] = useState(false);
@@ -32,6 +33,7 @@ const AllTasksToday = () => {
   const [editedName, setEditedName] = useState('');
   const [statuss, setStatuss] = useState(false);
   const [end, setEndTime] = useState('');
+  const [loader, setLoader] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -51,6 +53,7 @@ const AllTasksToday = () => {
 
   const addDesc = async (e) => {
     e.preventDefault();
+    setLoader(true);
 
     var bodyFormData = new FormData();
     bodyFormData.append('task_id', taskId);
@@ -140,6 +143,8 @@ const AllTasksToday = () => {
           });
         });
     }
+    setaddFile([]);
+    setLoader(false);
   };
 
   const converTime = (a) => {
@@ -247,14 +252,16 @@ const AllTasksToday = () => {
   const handleClickEdit = (id) => {
     setTaskId(id);
 
+    setClickEdit(true);
     let thisTask = userAction.clickDate.filter((element) => element.id === id);
     setEditedName(thisTask[0].desc);
     setClickEdit(true);
+    setEndTime(thisTask[0].end_date);
   };
 
   const editEvent = async (e) => {
     e.preventDefault();
-
+    setLoader(true);
     var bodyFormData = new FormData();
     bodyFormData.append('desc', editedName);
     bodyFormData.append('end_date', end);
@@ -351,6 +358,8 @@ const AllTasksToday = () => {
           });
         });
     }
+
+    setLoader(false);
   };
 
   const options = [];
@@ -485,9 +494,9 @@ const AllTasksToday = () => {
                             : e.status === 3
                             ? t('calendar.bjd')
                             : e.status === 4
-                            ? 'Tasdiqlandi'
+                            ? t('calendar.tasdiq')
                             : e.status === 5
-                            ? 'Kechikdi'
+                            ? t('calendar.dead')
                             : t('calendar.no')}
                         </div>
                       </td>
@@ -508,8 +517,8 @@ const AllTasksToday = () => {
                       </td>
 
                       <td className="text-center">
-                        <div className="row">
-                          <div className="col-md-4 m-1">
+                        <div className="row flex-md-wrap">
+                          <div className="col-12 m-1">
                             <button
                               onClick={() => handleClickPlus(e.id)}
                               className="btn btn-outline-opus d-flex justify-content-between align-items-center mx-auto"
@@ -521,7 +530,7 @@ const AllTasksToday = () => {
                           localStorage.getItem('role') === 'adminClicked' ? (
                             <>
                               {e.status === 3 ? (
-                                <div className="col-md-4 m-1">
+                                <div className="col-12 m-1">
                                   <button
                                     onClick={() => handleChack(e.id)}
                                     className="btn btn-outline-opus d-flex justify-content-between align-items-center mx-auto"
@@ -536,7 +545,7 @@ const AllTasksToday = () => {
                           localStorage.getItem('role') === 'adminClicked' ||
                           !e.isAdmin ? (
                             <>
-                              <div className="col-md-4 m-1">
+                              <div className="col-12 m-1">
                                 <button
                                   onClick={() => handleClickEdit(e.id)}
                                   className="btn btn-outline-opus d-flex justify-content-between align-items-center mx-auto"
@@ -546,15 +555,6 @@ const AllTasksToday = () => {
                               </div>
                             </>
                           ) : null}
-
-                          {/* <div className="col-md-4 m-1">
-                            <button
-                              onClick={() => handleClickEdit(e.id)}
-                              className="btn btn-outline-opus d-flex justify-content-between align-items-center mx-auto"
-                            >
-                              <AiOutlineEdit />
-                            </button>
-                          </div> */}
                         </div>
                       </td>
                     </tr>
@@ -581,7 +581,7 @@ const AllTasksToday = () => {
                   <tr>
                     <th scope="col">№</th>
                     <th scope="col">{t('tasks.desc')}</th>
-                    <th scope="col">files</th>
+                    <th scope="col">{t('tasks.files')}</th>
                     <th scope="col">{t('modal.name')}</th>
                     <th scope="col">{t('modal.depart')}</th>
                     <th scope="col">{t('modal.time')}</th>
@@ -695,7 +695,7 @@ const AllTasksToday = () => {
         <Modal.Body>
           <form onSubmit={editEvent} className="p-3">
             <div className=" py-2 ">
-              <label className="form-label  text-dark">Edit task</label>
+              <label className="form-label  text-dark">{t('editTask')}</label>
 
               <input
                 className="form-control form-control-lg form-control-solid "
@@ -711,7 +711,7 @@ const AllTasksToday = () => {
               <div className=" py-2 ">
                 <div>
                   <label className="form-label  text-dark">
-                    foydalanuvchi biriktirish
+                    {t('adduserTask')}
                   </label>
                 </div>
                 <MySelect />
@@ -769,6 +769,8 @@ const AllTasksToday = () => {
           </Button>
         </Modal.Footer>
       </Modal>
+
+      {loader ? <LoaderPage /> : null}
     </>
   );
 };

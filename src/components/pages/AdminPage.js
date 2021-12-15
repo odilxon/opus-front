@@ -11,6 +11,7 @@ import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { AiOutlineDelete } from 'react-icons/ai';
+import LoaderPage from '../LoaderPage';
 
 const AdminPage = () => {
   const [showModal, setShowModal] = useState(false);
@@ -20,6 +21,7 @@ const AdminPage = () => {
   const [rank, setRank] = useState('');
   const [password, setPassword] = useState('');
   const [checkPass, setCheckPass] = useState(false);
+  const [loader, setLoader] = useState(false);
   // const [telNum, setTelNum] = useState('');
   const [inputList, setInputList] = useState([{ tel: '' }]);
   const navigate = useNavigate();
@@ -35,6 +37,7 @@ const AdminPage = () => {
   };
 
   const addUser = async (e) => {
+    setLoader(true);
     e.preventDefault();
     var bodyFormData = new FormData();
     bodyFormData.append('name', name);
@@ -69,6 +72,7 @@ const AdminPage = () => {
       .catch((err) => {
         console.log('Err:', err);
       });
+    setLoader(false);
   };
 
   const back = () => {
@@ -103,12 +107,16 @@ const AdminPage = () => {
   };
 
   const handleRemoveClick = (index) => {
+    setLoader(true);
     const list = [...inputList];
     list.splice(index, 1);
     setInputList(list);
+    setLoader(false);
   };
 
   const handleChange = (e, index) => {
+    setLoader(true);
+
     const { value } = e.target;
     const list = [...inputList];
     console.log(value);
@@ -116,9 +124,12 @@ const AdminPage = () => {
     list[index]['tel'] = value;
     console.log(list);
     setInputList(list);
+    setLoader(false);
   };
 
   const getAllUser = async () => {
+    setLoader(true);
+
     await axios({
       method: 'get',
       url: AllUSerUrl,
@@ -134,6 +145,8 @@ const AdminPage = () => {
       .catch((err) => {
         console.log('Err:', err);
       });
+
+    setLoader(false);
   };
 
   useEffect(() => {
@@ -405,6 +418,7 @@ const AdminPage = () => {
           <h2 className="text-center">{t('admin.user')}</h2>
         )}
       </div>
+      {loader ? <LoaderPage /> : null}
     </Container>
   );
 };

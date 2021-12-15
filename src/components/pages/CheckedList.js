@@ -155,10 +155,10 @@ const CheckedList = () => {
   const handleClickEdit = (id) => {
     setTaskId(id);
     setClickEdit(true);
-    // let thisTask = userAction.clickDate.filter(
-    //   (element) => element.id === setTaskId
-    // );
-    // setEditedName(thisTask.desc);
+    let thisTask = userAction.clickDate.filter((element) => element.id === id);
+    setEditedName(thisTask[0].desc);
+    setClickEdit(true);
+    setEndTime(thisTask[0].end_date);
   };
 
   const handleChack = async (id) => {
@@ -582,9 +582,9 @@ const CheckedList = () => {
                           : e.status === 3
                           ? t('calendar.bjd')
                           : e.status === 4
-                          ? 'Tasdiqlandi'
+                          ? t('calendar.tasdiq')
                           : e.status === 5
-                          ? 'Kechikdi'
+                          ? t('calendar.dead')
                           : t('calendar.no')}
                       </div>
                     </td>
@@ -749,7 +749,7 @@ const CheckedList = () => {
                   <tr>
                     <th scope="col">№</th>
                     <th scope="col">{t('tasks.desc')}</th>
-                    <th scope="col">files</th>
+                    <th scope="col">{t('tasks.files')}</th>
                     <th scope="col">{t('modal.name')}</th>
                     <th scope="col">{t('modal.depart')}</th>
                     <th scope="col">{t('modal.time')}</th>

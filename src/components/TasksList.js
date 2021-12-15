@@ -23,6 +23,7 @@ import { defaultStyles, FileIcon } from 'react-file-icon';
 import { HiOutlineArrowNarrowLeft } from 'react-icons/hi';
 import { useTranslation } from 'react-i18next';
 import { MultiSelect } from 'react-multi-select-component';
+import LoaderPage from './LoaderPage';
 // import DataTable from 'react-data-table-component';
 
 const TasksList = () => {
@@ -39,6 +40,7 @@ const TasksList = () => {
   const [clickEdit, setClickEdit] = useState(false);
   const [editedName, setEditedName] = useState('');
   const [statuss, setStatuss] = useState(false);
+  const [loader, setLoader] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -63,6 +65,8 @@ const TasksList = () => {
 
   const addEvent = async (e) => {
     e.preventDefault();
+
+    setLoader(true);
     var bodyFormData = new FormData();
 
     bodyFormData.append('desc', nameAd);
@@ -164,6 +168,9 @@ const TasksList = () => {
     }
 
     setShow(false);
+    setaddFile([]);
+
+    setLoader(false);
   };
 
   const handleClickEdit = (id) => {
@@ -182,7 +189,7 @@ const TasksList = () => {
 
   const addDesc = async (e) => {
     e.preventDefault();
-
+    setLoader(true);
     var bodyFormData = new FormData();
     bodyFormData.append('task_id', taskId);
     bodyFormData.append('desc', descName);
@@ -271,6 +278,8 @@ const TasksList = () => {
           });
         });
     }
+    setaddFile([]);
+    setLoader(false);
   };
 
   const converTime = (a) => {
@@ -327,7 +336,7 @@ const TasksList = () => {
 
   const editEvent = async (e) => {
     e.preventDefault();
-
+    setLoader(true);
     var bodyFormData = new FormData();
     bodyFormData.append('desc', editedName);
     bodyFormData.append('end_date', end);
@@ -424,9 +433,11 @@ const TasksList = () => {
           });
         });
     }
+    setLoader(false);
   };
 
   const FetchDateInfos = async () => {
+    setLoader(true);
     if (localStorage.getItem('role') === 'adminClicked') {
       await axios({
         method: 'get',
@@ -466,8 +477,10 @@ const TasksList = () => {
           console.log('Err:', err);
         });
     }
+    setLoader(false);
   };
   const handleChack = async (id) => {
+    setLoader(true);
     await axios({
       method: 'get',
       url: AdminChekUrl,
@@ -487,6 +500,8 @@ const TasksList = () => {
       .catch((err) => {
         console.log('Err:', err);
       });
+
+    setLoader(false);
   };
   const options = [];
   if (userAction.allUsers.length > 0) {
@@ -665,8 +680,8 @@ const TasksList = () => {
                       </td> */}
 
                       <td className="text-center">
-                        <div className="row">
-                          <div className="col-md-4 m-1">
+                        <div className="row flex-md-wrap">
+                          <div className="col-12 m-1">
                             <button
                               onClick={() => handleClickPlus(e.id)}
                               className="btn btn-outline-opus d-flex justify-content-between align-items-center mx-auto"
@@ -678,7 +693,7 @@ const TasksList = () => {
                           localStorage.getItem('role') === 'adminClicked' ? (
                             <>
                               {e.status === 3 ? (
-                                <div className="col-md-4 m-1">
+                                <div className="col-12 m-1">
                                   <button
                                     onClick={() => handleChack(e.id)}
                                     className="btn btn-outline-opus d-flex justify-content-between align-items-center mx-auto"
@@ -691,9 +706,9 @@ const TasksList = () => {
                           ) : null}
                           {localStorage.getItem('role') === 'admin' ||
                           localStorage.getItem('role') === 'adminClicked' ||
-                          localStorage.getItem('myId') === e.owner_id ? (
+                          !e.isAdmin ? (
                             <>
-                              <div className="col-md-4 m-1">
+                              <div className="col-12 m-1">
                                 <button
                                   onClick={() => handleClickEdit(e.id)}
                                   className="btn btn-outline-opus d-flex justify-content-between align-items-center mx-auto"
@@ -703,15 +718,6 @@ const TasksList = () => {
                               </div>
                             </>
                           ) : null}
-
-                          {/* <div className="col-md-4 m-1">
-                            <button
-                              onClick={() => handleClickEdit(e.id)}
-                              className="btn btn-outline-opus d-flex justify-content-between align-items-center mx-auto"
-                            >
-                              <AiOutlineEdit />
-                            </button>
-                          </div> */}
                         </div>
                       </td>
                     </tr>
@@ -926,7 +932,7 @@ const TasksList = () => {
         <Modal.Body>
           <form onSubmit={editEvent} className="p-3">
             <div className=" py-2 ">
-              <label className="form-label  text-dark">Edit task</label>
+              <label className="form-label  text-dark"> {t('editTask')}</label>
 
               <input
                 className="form-control form-control-lg form-control-solid "
@@ -942,7 +948,7 @@ const TasksList = () => {
               <div className=" py-2 ">
                 <div>
                   <label className="form-label  text-dark">
-                    foydalanuvchi biriktirish
+                    {t('adduserTask')}
                   </label>
                 </div>
                 <MySelect />
@@ -1000,6 +1006,8 @@ const TasksList = () => {
           </Button>
         </Modal.Footer>
       </Modal>
+
+      {loader ? <LoaderPage /> : null}
     </>
   );
 };

@@ -21,6 +21,7 @@ import {
 import { defaultStyles, FileIcon } from 'react-file-icon';
 import { useTranslation } from 'react-i18next';
 import { MultiSelect } from 'react-multi-select-component';
+import LoaderPage from '../LoaderPage';
 
 const UserAllTasks = () => {
   const [end, setEndTime] = useState('');
@@ -36,6 +37,7 @@ const UserAllTasks = () => {
   const [selectValue, setSelectValue] = useState([]);
   const [editedName, setEditedName] = useState('');
   const [statuss, setStatuss] = useState(false);
+  const [loader, setLoader] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -52,6 +54,7 @@ const UserAllTasks = () => {
 
   const addEvent = async (e) => {
     e.preventDefault();
+    setLoader(true);
     var bodyFormData = new FormData();
 
     bodyFormData.append('desc', nameAd);
@@ -145,7 +148,8 @@ const UserAllTasks = () => {
           });
         });
     }
-
+    setaddFile([]);
+    setLoader(false);
     setShow(false);
   };
 
@@ -156,10 +160,10 @@ const UserAllTasks = () => {
   const handleClickEdit = (id) => {
     setTaskId(id);
     setClickEdit(true);
-    // let thisTask = userAction.clickDate.filter(
-    //   (element) => element.id === setTaskId
-    // );
-    // setEditedName(thisTask.desc);
+    let thisTask = userAction.clickDate.filter((element) => element.id === id);
+    setEditedName(thisTask[0].desc);
+    setClickEdit(true);
+    setEndTime(thisTask[0].end_date);
   };
 
   const handleChack = async (id) => {
@@ -186,7 +190,7 @@ const UserAllTasks = () => {
 
   const editEvent = async (e) => {
     e.preventDefault();
-
+    setLoader(true);
     var bodyFormData = new FormData();
     bodyFormData.append('desc', editedName);
     bodyFormData.append('end_date', end);
@@ -283,10 +287,12 @@ const UserAllTasks = () => {
           });
         });
     }
+    setaddFile([]);
+    setLoader(false);
   };
   const addDesc = async (e) => {
     e.preventDefault();
-
+    setLoader(true);
     var bodyFormData = new FormData();
     bodyFormData.append('task_id', taskId);
     bodyFormData.append('desc', descName);
@@ -375,6 +381,9 @@ const UserAllTasks = () => {
           });
         });
     }
+
+    setaddFile([]);
+    setLoader(false);
   };
 
   const converTime = (a) => {
@@ -430,6 +439,7 @@ const UserAllTasks = () => {
   };
 
   const FetchDateInfos = async () => {
+    setLoader(true);
     await axios({
       method: 'get',
       url: GetUserDateClickUrl,
@@ -450,6 +460,7 @@ const UserAllTasks = () => {
       .catch((err) => {
         console.log('Err:', err);
       });
+    setLoader(false);
   };
 
   const options = [];
@@ -579,9 +590,9 @@ const UserAllTasks = () => {
                             : e.status === 3
                             ? t('calendar.bjd')
                             : e.status === 4
-                            ? 'Tasdiqlandi'
+                            ? t('calendar.tasdiq')
                             : e.status === 5
-                            ? 'Kechikdi'
+                            ? t('calendar.dead')
                             : t('calendar.no')}
                         </div>
                       </td>
@@ -600,8 +611,8 @@ const UserAllTasks = () => {
                         )}
                       </td>
                       <td className="text-center">
-                        <div className="row">
-                          <div className="col-md-4 m-1">
+                        <div className="row flex-md-wrap">
+                          <div className="col-12 m-1">
                             <button
                               onClick={() => handleClickPlus(e.id)}
                               className="btn btn-outline-opus d-flex justify-content-between align-items-center mx-auto"
@@ -613,7 +624,7 @@ const UserAllTasks = () => {
                           localStorage.getItem('role') === 'adminClicked' ? (
                             <>
                               {e.status === 3 ? (
-                                <div className="col-md-4 m-1">
+                                <div className="col-12 m-1">
                                   <button
                                     onClick={() => handleChack(e.id)}
                                     className="btn btn-outline-opus d-flex justify-content-between align-items-center mx-auto"
@@ -626,9 +637,9 @@ const UserAllTasks = () => {
                           ) : null}
                           {localStorage.getItem('role') === 'admin' ||
                           localStorage.getItem('role') === 'adminClicked' ||
-                          localStorage.getItem('myId') === e.owner_id ? (
+                          !e.isAdmin ? (
                             <>
-                              <div className="col-md-4 m-1">
+                              <div className="col-12 m-1">
                                 <button
                                   onClick={() => handleClickEdit(e.id)}
                                   className="btn btn-outline-opus d-flex justify-content-between align-items-center mx-auto"
@@ -638,15 +649,6 @@ const UserAllTasks = () => {
                               </div>
                             </>
                           ) : null}
-
-                          {/* <div className="col-md-4 m-1">
-                            <button
-                              onClick={() => handleClickEdit(e.id)}
-                              className="btn btn-outline-opus d-flex justify-content-between align-items-center mx-auto"
-                            >
-                              <AiOutlineEdit />
-                            </button>
-                          </div> */}
                         </div>
                       </td>
                     </tr>
@@ -747,7 +749,7 @@ const UserAllTasks = () => {
                   <tr>
                     <th scope="col">№</th>
                     <th scope="col">{t('tasks.desc')}</th>
-                    <th scope="col">files</th>
+                    <th scope="col">{t('tasks.files')}</th>
                     <th scope="col">{t('modal.name')}</th>
                     <th scope="col">{t('modal.depart')}</th>
                     <th scope="col">{t('modal.time')}</th>
@@ -854,7 +856,6 @@ const UserAllTasks = () => {
       </Modal>
 
       {/* Edit bosganda */}
-      {/* Edit bosganda */}
       <Modal show={clickEdit} onHide={() => setClickEdit(false)}>
         <Modal.Header closeButton>
           <Modal.Title>{t('modal.editEvent')}</Modal.Title>
@@ -862,7 +863,7 @@ const UserAllTasks = () => {
         <Modal.Body>
           <form onSubmit={editEvent} className="p-3">
             <div className=" py-2 ">
-              <label className="form-label  text-dark">Edit task</label>
+              <label className="form-label  text-dark">{t('editTask')}</label>
 
               <input
                 className="form-control form-control-lg form-control-solid "
@@ -878,7 +879,7 @@ const UserAllTasks = () => {
               <div className=" py-2 ">
                 <div>
                   <label className="form-label  text-dark">
-                    foydalanuvchi biriktirish
+                    {t('adduserTask')}
                   </label>
                 </div>
                 <MySelect />
@@ -936,6 +937,8 @@ const UserAllTasks = () => {
           </Button>
         </Modal.Footer>
       </Modal>
+
+      {loader ? <LoaderPage /> : null}
     </>
   );
 };

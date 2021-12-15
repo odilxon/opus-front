@@ -9,10 +9,13 @@ import { NewPassUrl } from '../../service';
 import { useTranslation } from 'react-i18next';
 // import { LoginUrl } from '../../service';
 import Logo from '../../assets/images/logo.svg';
+import LoaderPage from '../LoaderPage';
 const ChangePassword = () => {
   const [password, setPassword] = useState('');
   const [currentPassword, setCurrentPassword] = useState('');
   const [showpass, setShowpass] = useState(false);
+  const [loader, setLoader] = useState(false);
+
   const { t } = useTranslation();
 
   // const dispatch = useDispatch();
@@ -25,6 +28,7 @@ const ChangePassword = () => {
   console.log(userInfo);
 
   const editPassword = async (e) => {
+    setLoader(true);
     e.preventDefault();
     var bodyFormData = new FormData();
     bodyFormData.append('current_password', currentPassword);
@@ -88,6 +92,7 @@ const ChangePassword = () => {
           progress: undefined,
         });
       });
+    setLoader(false);
   };
 
   // useEffect(() => {
@@ -98,14 +103,11 @@ const ChangePassword = () => {
   return (
     <div className="LogIn">
       <div className="container">
-        <h1 className="text-center py-3"><div className="logo">
-              <img
-                src={Logo}
-                alt="random"
-                className="img-fluid"
-                width="800"
-              />
-            </div>  </h1>
+        <h1 className="text-center py-3">
+          <div className="logo">
+            <img src={Logo} alt="random" className="img-fluid" width="800" />
+          </div>{' '}
+        </h1>
         <div className="bg-white rounded shadow-sm p-5 mx-auto mb-2">
           <form onSubmit={editPassword}>
             <h2 className="text-center h3">{t('chpass.changePass')}</h2>
@@ -184,6 +186,7 @@ const ChangePassword = () => {
           </form>
         </div>
       </div>
+      {loader ? <LoaderPage /> : null}
     </div>
   );
 };

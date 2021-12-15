@@ -14,6 +14,7 @@ import { UserInfosLogIn } from '../../redux/actions/UserAction';
 import { useTranslation } from 'react-i18next';
 import Today from './Today';
 import CheckedList from './CheckedList';
+import LoaderPage from '../LoaderPage';
 
 const MyProfil = () => {
   const [name, setName] = useState('');
@@ -22,6 +23,8 @@ const MyProfil = () => {
   const [tel, setTel] = useState('');
   const [editProfil, setEditProfil] = useState(false);
   const [rankAcc, setRankAcc] = useState('');
+  const [loader, setLoader] = useState(false);
+
   // const [telNum, setTelNum] = useState('');
   // const [telNum2, setTelNum2] = useState('');
 
@@ -44,6 +47,7 @@ const MyProfil = () => {
   // }
 
   const ChangeImage = async (e) => {
+    setLoader(true);
     const file = e.target.files[0];
     var bodyFormData = new FormData();
     bodyFormData.append('image', file);
@@ -76,9 +80,11 @@ const MyProfil = () => {
       .catch((err) => {
         console.log('Err:', err);
       });
+    setLoader(false);
   };
 
   const submitEdit = async (e) => {
+    setLoader(true);
     e.preventDefault();
     var bodyFormData = new FormData();
     bodyFormData.append('name', name);
@@ -155,9 +161,12 @@ const MyProfil = () => {
           progress: undefined,
         });
       });
+
+    setLoader(false);
   };
 
   const getUserInfo = async () => {
+    setLoader(true);
     await axios({
       method: 'get',
       url: GetUserInfoUrl,
@@ -204,6 +213,7 @@ const MyProfil = () => {
       .catch((err) => {
         console.log('Err:', err);
       });
+    setLoader(false);
   };
 
   const handleChange = (e, index) => {
@@ -511,7 +521,7 @@ const MyProfil = () => {
                                       className="form-control form-control-lg form-control-solid "
                                       type="number"
                                       name="tel"
-                                      placeholder={e.tel}
+                                      placeholder={t('admin.telplc')}
                                       value={e.tel}
                                       data-ids={i}
                                       onChange={(e) => handleChange(e, i)}
@@ -532,35 +542,6 @@ const MyProfil = () => {
                             </div>
                           ))
                         : null}
-
-                      {/* <div className="row mt-lg-3">
-                        <div className=" py-2 ">
-                          <div className="row">
-                            <div className="col-4 col-md-3 px-1">
-                              <input
-                                className="form-control form-control-lg form-control-solid "
-                                type="text"
-                                name="tel"
-                                value={'+998'}
-                                aria-label="Disabled input"
-                                disabled={true}
-                                readOnly
-                              />
-                            </div>
-                            <div className="col-8 col-md-9 px-1">
-                              <input
-                                className="form-control form-control-lg form-control-solid "
-                                type="number"
-                                name="tel"
-                                placeholder={t('admin.telplc')}
-                                value={telNum2}
-                                onChange={(e) => setTelNum2(e.target.value)}
-                                required
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      </div> */}
                     </div>
 
                     <div className="col-12 text-end">
@@ -569,7 +550,7 @@ const MyProfil = () => {
                         onClick={handleAddClick}
                         className="btn btn-opus my-2"
                       >
-                        yangi raqam
+                        {t('admin.newNumber')}
                       </button>
                     </div>
                   </div>
@@ -609,6 +590,7 @@ const MyProfil = () => {
           </div>
         </div>
       </div>
+      {loader ? <LoaderPage /> : null}
     </div>
   );
 };

@@ -12,6 +12,7 @@ import { AiOutlinePlus } from 'react-icons/ai';
 import { defaultStyles, FileIcon } from 'react-file-icon';
 import { Button, Modal } from 'react-bootstrap';
 import { toast } from 'react-toastify';
+import LoaderPage from '../LoaderPage';
 
 const Today = () => {
   const [clickHist, setClickHist] = useState(false);
@@ -19,6 +20,7 @@ const Today = () => {
   const [clickDesc, setClickDesc] = useState(false);
   const [descName, setDescName] = useState('');
   const [checkDesc, setCheckDesc] = useState(false);
+  const [loader, setLoader] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -38,7 +40,7 @@ const Today = () => {
 
   const addDesc = async (e) => {
     e.preventDefault();
-
+    setLoader(true);
     var bodyFormData = new FormData();
     bodyFormData.append('task_id', taskId);
     bodyFormData.append('desc', descName);
@@ -106,6 +108,7 @@ const Today = () => {
           });
         });
     }
+    setLoader(false);
   };
 
   const converTime = (a) => {
@@ -170,6 +173,7 @@ const Today = () => {
   };
 
   const FetchDateInfos = async () => {
+    setLoader(true);
     localStorage.setItem('ckickedDate', TodayDate());
 
     if (
@@ -216,6 +220,7 @@ const Today = () => {
           console.log('Err:', err);
         });
     }
+    setLoader(false);
   };
 
   useEffect(() => {
@@ -319,9 +324,9 @@ const Today = () => {
                           : e.status === 3
                           ? t('calendar.bjd')
                           : e.status === 4
-                          ? 'Tasdiqlandi'
+                          ? t('calendar.tasdiq')
                           : e.status === 5
-                          ? 'Kechikdi'
+                          ? t('calendar.dead')
                           : t('calendar.no')}
                       </div>
                     </td>
@@ -439,6 +444,8 @@ const Today = () => {
           </Button>
         </Modal.Footer>
       </Modal>
+
+      {loader ? <LoaderPage /> : null}
     </>
   );
 };

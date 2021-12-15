@@ -1,5 +1,5 @@
 /* eslint-disable array-callback-return */
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
@@ -15,8 +15,11 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { CdataUrl, GetUserDateClickUrl } from '../../service';
 import { useTranslation } from 'react-i18next';
+import LoaderPage from '../LoaderPage';
 
 const Calendar = () => {
+  const [loader, setLoader] = useState(false);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   // const [show, setShow] = useState(false);
@@ -88,6 +91,7 @@ const Calendar = () => {
   // };
 
   const handleDateClick = async (dateClickInfo) => {
+    setLoader(true);
     dispatch(HandleClickDate(dateClickInfo.dateStr));
     localStorage.setItem('ckickedDate', dateClickInfo.dateStr);
     navigate('/tasks');
@@ -130,9 +134,12 @@ const Calendar = () => {
           console.log('Err:', err);
         });
     }
+    setLoader(false);
   };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const getCount = async () => {
+    setLoader(true);
+
     await axios({
       method: 'get',
       url: CdataUrl,
@@ -150,9 +157,12 @@ const Calendar = () => {
       .catch((err) => {
         console.log('Err:', err);
       });
+    setLoader(false);
   };
 
   const getCountUsers = async () => {
+    setLoader(true);
+
     await axios({
       method: 'get',
       url: CdataUrl,
@@ -174,6 +184,7 @@ const Calendar = () => {
       .catch((err) => {
         console.log('Err:', err);
       });
+    setLoader(false);
   };
 
   const backCard = () => {
@@ -222,7 +233,7 @@ const Calendar = () => {
 
     if (e.Tasdiqlandi > 0) {
       elements.push({
-        title: `Тасдиқланди: ${e.Tasdiqlandi} `,
+        title: `${t('calendar.tasdiq')}: ${e.Tasdiqlandi} `,
         // title: `${e.Tasdiqlandi}`,
         date: d,
         backgroundColor: '#299e85',
@@ -232,7 +243,7 @@ const Calendar = () => {
     }
     if (e.Kech_topshirildi > 0) {
       elements.push({
-        title: `Кеч топширилди: ${e.Kech_topshirildi} `,
+        title: `${t('calendar.dead')}:: ${e.Kech_topshirildi} `,
         // title: `${e.Kech_topshirildi}`,
         date: d,
         backgroundColor: '#121212',
@@ -241,7 +252,7 @@ const Calendar = () => {
       });
     }
   });
-  console.log(calInf);
+  // console.log(calInf);
 
   useEffect(() => {
     if (!localStorage.getItem('userToken')) {
@@ -366,6 +377,8 @@ const Calendar = () => {
           </Button>
         </Modal.Footer>
       </Modal> */}
+
+      {loader ? <LoaderPage /> : null}
     </div>
   );
 };
