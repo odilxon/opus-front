@@ -1,4 +1,3 @@
-
 nav {
   position: fixed;
   background-color: #fff;
@@ -95,7 +94,10 @@ nav {
       }
     }
     .open {
-      transform: translate(-30px, 80px) scale(1);
+      transform: translate(0, 60px) scale(1);
+      @media (min-width: 768px) {
+        transform: translate(-30px, 80px) scale(1);
+      }
     }
   }
   button {
