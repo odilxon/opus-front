@@ -516,7 +516,7 @@ const MyProfil = () => {
                                       readOnly
                                     />
                                   </div>
-                                  <div className="col-4 col-md-7 px-1">
+                                  <div className="col-5 col-md-7 px-1">
                                     <input
                                       className="form-control form-control-lg form-control-solid "
                                       type="number"

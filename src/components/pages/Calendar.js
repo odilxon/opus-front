@@ -280,7 +280,7 @@ const Calendar = () => {
           <div className="col-md-6">
             <div className="row py-2 justify-content-end align-items-center">
               {localStorage.getItem('role') === 'adminClicked' ? (
-                <div className="co-md-6 col-lg-7 tex-end">
+                <div className="co-md-6 col-lg-7 text-end py-1">
                   <button onClick={allTasksUser} className="btn btn-opus">
                     {t('calendar.allTasks')}
                   </button>
@@ -288,7 +288,7 @@ const Calendar = () => {
               ) : null}
 
               {localStorage.getItem('clickedUserId') ? (
-                <div className="col-md-5 col-lg-5 tex-end">
+                <div className="col-md-5 col-lg-5 text-end  py-1">
                   <button onClick={backCard} className="btn btn-opus">
                     {t('calendar.qaytish')}
                   </button>

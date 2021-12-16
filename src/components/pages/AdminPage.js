@@ -164,7 +164,7 @@ const AdminPage = () => {
           <div className="col-md-7">
             <h2>{t('admin.title')}</h2>
           </div>
-          <div className="col-md-5 text-end">
+          <div className="col-md-5 py-1 text-end">
             <button
               onClick={() => {
                 setShowModal(!showModal);
