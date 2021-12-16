@@ -23,7 +23,8 @@ chrome-user-data
 .vscode
 *.swp
 *.swo
-
+deploy.sh
+src/service/index.js
 packages/react-devtools-core/dist
 packages/react-devtools-extensions/chrome/build
 packages/react-devtools-extensions/chrome/*.crx
