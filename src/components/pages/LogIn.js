@@ -29,6 +29,8 @@ const LogIn = () => {
     bodyFormData.append('password', password);
 
     if (!email || !password) {
+      setLoader(false);
+
       return toast.warning(t('warning'), {
         position: 'bottom-right',
         autoClose: 5000,
@@ -52,6 +54,7 @@ const LogIn = () => {
         localStorage.setItem('userToken', tokeen);
         setEmail('');
         setPassword('');
+        setLoader(false);
       })
       .catch((err) => {
         console.log('Err:', err);
@@ -59,7 +62,7 @@ const LogIn = () => {
 
     if (localStorage.getItem('userToken')) {
       navigate('/myAccount');
-
+      setLoader(false);
       return toast.success(t('login.success'), {
         position: 'bottom-right',
         autoClose: 5000,
@@ -70,6 +73,7 @@ const LogIn = () => {
         progress: undefined,
       });
     } else {
+      setLoader(false);
       return toast.error(t('login.error'), {
         position: 'bottom-right',
         autoClose: 5000,
@@ -80,7 +84,6 @@ const LogIn = () => {
         progress: undefined,
       });
     }
-    setLoader(false);
   };
 
   useEffect(() => {
