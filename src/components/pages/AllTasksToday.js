@@ -65,6 +65,7 @@ const AllTasksToday = () => {
           bodyFormData.append(`file${[]}`, addFile[i]);
         }
       } else {
+        setLoader(false);
         return toast.warning('Fayllar keragidan ortib ketdi', {
           position: 'bottom-right',
           autoClose: 5000,
@@ -98,8 +99,10 @@ const AllTasksToday = () => {
           FetchDateInfos();
           setDescName('');
           setClickDesc(false);
+          setLoader(false);
         })
         .catch((err) => {
+          setLoader(false);
           console.log('Err:', err);
           return toast.error(t('tasks.alerterr'), {
             position: 'bottom-right',
@@ -129,9 +132,11 @@ const AllTasksToday = () => {
           FetchDateInfos();
           setDescName('');
           setClickDesc(false);
+          setLoader(false);
         })
         .catch((err) => {
           console.log('Err:', err);
+          setLoader(false);
           return toast.error(t('tasks.alerterr'), {
             position: 'bottom-right',
             autoClose: 5000,
@@ -204,6 +209,7 @@ const AllTasksToday = () => {
   //   navigate('/admin');
   // };
   const FetchDateInfos = async () => {
+    setLoader(true);
     await axios({
       method: 'get',
       url: GetUserDateClickUrl,
@@ -221,13 +227,17 @@ const AllTasksToday = () => {
         const { data } = response;
         console.log(data);
         dispatch(HandleClickDateUser(data));
+        setLoader(false);
       })
       .catch((err) => {
         console.log('Err:', err);
       });
+
+    setLoader(false);
   };
 
   const handleChack = async (id) => {
+    setLoader(true);
     await axios({
       method: 'get',
       url: AdminChekUrl,
@@ -247,11 +257,12 @@ const AllTasksToday = () => {
       .catch((err) => {
         console.log('Err:', err);
       });
+
+    setLoader(false);
   };
 
   const handleClickEdit = (id) => {
     setTaskId(id);
-
     setClickEdit(true);
     let thisTask = userAction.clickDate.filter((element) => element.id === id);
     setEditedName(thisTask[0].desc);
