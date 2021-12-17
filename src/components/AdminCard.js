@@ -6,7 +6,7 @@ const AdminCard = (props) => {
       <img
         className="img-fluid admin-pic rounded-circle img-thumbnail mt-3"
         src={props.pic}
-        alt="pic"
+        alt={props.title}
       />
 
       <h3 className="h5 text-center mt-3">{props.title}</h3>
