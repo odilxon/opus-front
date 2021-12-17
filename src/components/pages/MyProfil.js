@@ -125,7 +125,7 @@ const MyProfil = () => {
         setName('');
         setTel('');
         setRankAcc('');
-        const { data } = response;
+        // const { data } = response;
         // const dataLocal = {
         //   department: data.department,
         //   email: data.email,
