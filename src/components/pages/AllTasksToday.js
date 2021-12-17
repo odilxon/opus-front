@@ -55,6 +55,18 @@ const AllTasksToday = () => {
     e.preventDefault();
     setLoader(true);
 
+    if (descName.length < 1) {
+      return toast.warning(t('modal.errName'), {
+        position: 'bottom-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+
     var bodyFormData = new FormData();
     bodyFormData.append('task_id', taskId);
     bodyFormData.append('desc', descName);
@@ -65,6 +77,7 @@ const AllTasksToday = () => {
           bodyFormData.append(`file${[]}`, addFile[i]);
         }
       } else {
+        setLoader(false);
         return toast.warning('Fayllar keragidan ortib ketdi', {
           position: 'bottom-right',
           autoClose: 5000,
@@ -98,8 +111,10 @@ const AllTasksToday = () => {
           FetchDateInfos();
           setDescName('');
           setClickDesc(false);
+          setLoader(false);
         })
         .catch((err) => {
+          setLoader(false);
           console.log('Err:', err);
           return toast.error(t('tasks.alerterr'), {
             position: 'bottom-right',
@@ -129,9 +144,11 @@ const AllTasksToday = () => {
           FetchDateInfos();
           setDescName('');
           setClickDesc(false);
+          setLoader(false);
         })
         .catch((err) => {
           console.log('Err:', err);
+          setLoader(false);
           return toast.error(t('tasks.alerterr'), {
             position: 'bottom-right',
             autoClose: 5000,
@@ -204,6 +221,7 @@ const AllTasksToday = () => {
   //   navigate('/admin');
   // };
   const FetchDateInfos = async () => {
+    setLoader(true);
     await axios({
       method: 'get',
       url: GetUserDateClickUrl,
@@ -221,13 +239,17 @@ const AllTasksToday = () => {
         const { data } = response;
         console.log(data);
         dispatch(HandleClickDateUser(data));
+        setLoader(false);
       })
       .catch((err) => {
         console.log('Err:', err);
       });
+
+    setLoader(false);
   };
 
   const handleChack = async (id) => {
+    setLoader(true);
     await axios({
       method: 'get',
       url: AdminChekUrl,
@@ -247,11 +269,12 @@ const AllTasksToday = () => {
       .catch((err) => {
         console.log('Err:', err);
       });
+
+    setLoader(false);
   };
 
   const handleClickEdit = (id) => {
     setTaskId(id);
-
     setClickEdit(true);
     let thisTask = userAction.clickDate.filter((element) => element.id === id);
     setEditedName(thisTask[0].desc);
@@ -402,7 +425,7 @@ const AllTasksToday = () => {
   return (
     <>
       <div className="container">
-        <div className="bg-white shadow-sm my-md-2 p-4 rounded">
+        <div className="bg-white shadow-sm mt-2 my-md-2 p-4 rounded">
           <div className="row align-items-center">
             <div className="col-md-6 text-start">
               <h1 className="pt-2 pb-4">{t('tasks.alltaskslist')}</h1>
@@ -647,6 +670,7 @@ const AllTasksToday = () => {
                 placeholder={t('modal.descName')}
                 value={descName}
                 onChange={(e) => setDescName(e.target.value)}
+                required
               />
             </div>
 
@@ -704,6 +728,7 @@ const AllTasksToday = () => {
                 placeholder="edit task name"
                 value={editedName}
                 onChange={(e) => setEditedName(e.target.value)}
+                required
               />
             </div>
 
@@ -741,6 +766,7 @@ const AllTasksToday = () => {
                 value={end}
                 onChange={(e) => setEndTime(e.target.value)}
                 min={localStorage.getItem('ckickedDate')}
+                required
               />
             </div>
 

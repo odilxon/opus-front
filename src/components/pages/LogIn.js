@@ -30,7 +30,6 @@ const LogIn = () => {
 
     if (!email || !password) {
       setLoader(false);
-
       return toast.warning(t('warning'), {
         position: 'bottom-right',
         autoClose: 5000,
@@ -58,6 +57,7 @@ const LogIn = () => {
       })
       .catch((err) => {
         console.log('Err:', err);
+        setLoader(false);
       });
 
     if (localStorage.getItem('userToken')) {

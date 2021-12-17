@@ -272,7 +272,7 @@ const Calendar = () => {
 
   return (
     <div className="calendar">
-      <div className="container shadow-sm rounded my-md-3   bg-white">
+      <div className="container shadow-sm rounded mt-2 my-md-3     bg-white">
         <div className="row d-flex justify-content-between align-items-center">
           <div className="col-md-4">
             <h1 className="h3 px-3 pt-3">{t('calendar.title')}</h1>
