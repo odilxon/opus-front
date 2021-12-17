@@ -13,7 +13,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { UserInfosLogIn } from '../../redux/actions/UserAction';
 import { useTranslation } from 'react-i18next';
 import Today from './Today';
-import CheckedList from './CheckedList';
+// import CheckedList from './CheckedList';
 import LoaderPage from '../LoaderPage';
 
 const MyProfil = () => {
@@ -76,9 +76,11 @@ const MyProfil = () => {
 
         dispatch(UserInfosLogIn(dataLocal));
         // localStorage.setItem('userInfos', JSON.stringify(dataLocal));
+        setLoader(false);
       })
       .catch((err) => {
         console.log('Err:', err);
+        setLoader(false);
       });
     setLoader(false);
   };
@@ -98,6 +100,7 @@ const MyProfil = () => {
     // bodyFormData.append(`phone${[]}`, [`+998${telNum}`, `+998${telNum2}`]);
     // console.log(telNum);
     if (!name || !tel) {
+      setLoader(false);
       return toast.warning("Iltimos to'liq ma'lumot kiriting!", {
         position: 'bottom-right',
         autoClose: 5000,
@@ -138,6 +141,7 @@ const MyProfil = () => {
         setEditProfil(false);
         navigate('/myAccount');
         getUserInfo();
+        setLoader(false);
         return toast.success('Amal bajarildi', {
           position: 'bottom-right',
           autoClose: 5000,
@@ -150,7 +154,7 @@ const MyProfil = () => {
       })
       .catch((err) => {
         console.log('Err:', err);
-
+        setLoader(false);
         return toast.error("Noto'g'ri", {
           position: 'bottom-right',
           autoClose: 5000,
@@ -209,9 +213,11 @@ const MyProfil = () => {
         //setInputList([...inputList, { tel: '+998993286330' }]);
         //setInputList(data.phones);
         console.log(inputList);
+        setLoader(false);
       })
       .catch((err) => {
         console.log('Err:', err);
+        setLoader(false);
       });
     setLoader(false);
   };
