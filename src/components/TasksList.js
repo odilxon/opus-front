@@ -65,6 +65,29 @@ const TasksList = () => {
 
   const addEvent = async (e) => {
     e.preventDefault();
+    if (end.length < 1) {
+      return toast.warning(t('modal.errDate'), {
+        position: 'bottom-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+
+    if (nameAd.length < 1) {
+      return toast.warning(t('modal.errName'), {
+        position: 'bottom-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
 
     setLoader(true);
     var bodyFormData = new FormData();
@@ -98,10 +121,9 @@ const TasksList = () => {
         users.push(e.value);
       });
       console.log(users);
-
-      console.log(users);
       users.push(localStorage.getItem('clickedUserId'));
       users.forEach((e) => bodyFormData.append(`users${[]}`, e));
+
       await axios({
         method: 'post',
         params: {
@@ -190,6 +212,7 @@ const TasksList = () => {
   const addDesc = async (e) => {
     e.preventDefault();
     setLoader(true);
+
     var bodyFormData = new FormData();
     bodyFormData.append('task_id', taskId);
     bodyFormData.append('desc', descName);
@@ -337,6 +360,7 @@ const TasksList = () => {
   const editEvent = async (e) => {
     e.preventDefault();
     setLoader(true);
+
     var bodyFormData = new FormData();
     bodyFormData.append('desc', editedName);
     bodyFormData.append('end_date', end);
@@ -778,7 +802,8 @@ const TasksList = () => {
                 placeholder={t('modal.endplc')}
                 value={end}
                 onChange={(e) => setEndTime(e.target.value)}
-                min={localStorage.getItem('ckickedDate')}
+                min={`${localStorage.getItem('ckickedDate')}T00:00`}
+                required
               />
               <div className="fv-plugins-message-container invalid-feedback"></div>
             </div>
@@ -977,7 +1002,8 @@ const TasksList = () => {
                 placeholder={t('modal.endplc')}
                 value={end}
                 onChange={(e) => setEndTime(e.target.value)}
-                min={localStorage.getItem('ckickedDate')}
+                min={`${localStorage.getItem('ckickedDate')}T00:00`}
+                required
               />
             </div>
 

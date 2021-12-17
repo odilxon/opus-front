@@ -55,6 +55,18 @@ const AllTasksToday = () => {
     e.preventDefault();
     setLoader(true);
 
+    if (descName.length < 1) {
+      return toast.warning(t('modal.errName'), {
+        position: 'bottom-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+
     var bodyFormData = new FormData();
     bodyFormData.append('task_id', taskId);
     bodyFormData.append('desc', descName);
@@ -658,6 +670,7 @@ const AllTasksToday = () => {
                 placeholder={t('modal.descName')}
                 value={descName}
                 onChange={(e) => setDescName(e.target.value)}
+                required
               />
             </div>
 
@@ -715,6 +728,7 @@ const AllTasksToday = () => {
                 placeholder="edit task name"
                 value={editedName}
                 onChange={(e) => setEditedName(e.target.value)}
+                required
               />
             </div>
 
@@ -752,6 +766,7 @@ const AllTasksToday = () => {
                 value={end}
                 onChange={(e) => setEndTime(e.target.value)}
                 min={localStorage.getItem('ckickedDate')}
+                required
               />
             </div>
 

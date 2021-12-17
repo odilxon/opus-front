@@ -191,6 +191,29 @@ const UserAllTasks = () => {
   const editEvent = async (e) => {
     e.preventDefault();
     setLoader(true);
+    if (end.length < 1) {
+      return toast.warning(t('modal.errDate'), {
+        position: 'bottom-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+
+    if (nameAd.length < 1) {
+      return toast.warning(t('modal.errName'), {
+        position: 'bottom-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
     var bodyFormData = new FormData();
     bodyFormData.append('desc', editedName);
     bodyFormData.append('end_date', end);
@@ -293,6 +316,17 @@ const UserAllTasks = () => {
   const addDesc = async (e) => {
     e.preventDefault();
     setLoader(true);
+    if (descName.length < 1) {
+      return toast.warning(t('modal.errName'), {
+        position: 'bottom-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
     var bodyFormData = new FormData();
     bodyFormData.append('task_id', taskId);
     bodyFormData.append('desc', descName);
@@ -681,6 +715,7 @@ const UserAllTasks = () => {
                 placeholder="new desc"
                 value={nameAd}
                 onChange={(e) => setNamead(e.target.value)}
+                required
               />
 
               <div className="fv-plugins-message-container invalid-feedback"></div>
@@ -709,7 +744,8 @@ const UserAllTasks = () => {
                 placeholder={t('modal.endplc')}
                 value={end}
                 onChange={(e) => setEndTime(e.target.value)}
-                min={localStorage.getItem('ckickedDate')}
+                min={`${localStorage.getItem('ckickedDate')}T00:00`}
+                required
               />
               <div className="fv-plugins-message-container invalid-feedback"></div>
             </div>
