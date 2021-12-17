@@ -4,9 +4,10 @@ import './Styles/index.scss';
 import App from './App';
 import store from './redux/store';
 import { Provider } from 'react-redux';
+import LoaderPage from './components/LoaderPage';
 
 ReactDOM.render(
-  <Suspense fallback={'...Loading!'}>
+  <Suspense fallback={<LoaderPage />}>
     <Provider store={store}>
       <App />
     </Provider>

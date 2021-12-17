@@ -502,7 +502,7 @@ const UserAllTasks = () => {
   return (
     <>
       <div className="container">
-        <div className="bg-white shadow-sm my-md-2 p-4 rounded">
+        <div className="bg-white shadow-sm mt-2 my-md-2 p-4 rounded">
           <div className="row align-items-center">
             <div className="col-md-6 text-start">
               <h1 className="pt-2 pb-4">{t('tasks.alltaskslist')}</h1>
