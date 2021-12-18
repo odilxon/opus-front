@@ -42,11 +42,15 @@
   }
 }
 .btn-hist {
-  max-width: 180px !important;
+  max-width: 100px !important;
   overflow: hidden;
   display: inline-block;
   text-overflow: ellipsis;
   white-space: nowrap;
+
+  @media (min-width: 768px) {
+    max-width: 180px !important;
+  }
 }
 // .table {
 //   @media (min-width: 991px) {
@@ -135,8 +139,8 @@
     width: 30px;
     height: 30px;
     position: absolute;
-    bottom: -5px;
-    right: 20px;
+    bottom: -6px;
+    right: 10px;
     background-color: $base-color;
     clip-path: polygon(0 0, 0 100%, 100% 100%);
   }

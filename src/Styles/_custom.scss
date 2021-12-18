@@ -60,3 +60,31 @@ a {
   align-items: center;
   justify-content: center;
 }
+
+.badge-pill {
+  white-space: pre-wrap !important;
+  line-height: 1.25 !important;
+}
+td,
+th {
+  padding: 5px !important;
+}
+// .borderT,
+// tr,
+// td {
+//   border-collapse: collapse;
+//   border: 1px solid #ccc !important;
+// }
+table {
+  border-collapse: collapse;
+}
+table,
+th,
+td {
+  border: 1px solid #ccc !important;
+}
+@media screen and (max-width: 40em) {
+  .responsiveTable tbody tr {
+    border: 0.5px solid #ccc !important;
+  }
+}

@@ -10,7 +10,7 @@ import {
   TaskEditUrl,
 } from '../../service';
 import { AiOutlineCheck, AiOutlineEdit, AiOutlinePlus } from 'react-icons/ai';
-import { Button, Modal } from 'react-bootstrap';
+import { Button, Modal, Pagination } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import {
   HandleClickDateUser,
@@ -20,7 +20,9 @@ import { defaultStyles, FileIcon } from 'react-file-icon';
 import { useTranslation } from 'react-i18next';
 import { MultiSelect } from 'react-multi-select-component';
 import LoaderPage from '../LoaderPage';
-
+import { Table, Thead, Tbody, Tr, Th, Td } from 'react-super-responsive-table';
+import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css';
+import ReactPaginate from 'react-paginate';
 const AllTasksToday = () => {
   const [clickHist, setClickHist] = useState(false);
   const [taskId, setTaskId] = useState('');
@@ -34,6 +36,7 @@ const AllTasksToday = () => {
   const [statuss, setStatuss] = useState(false);
   const [end, setEndTime] = useState('');
   const [loader, setLoader] = useState(false);
+  // const [dataMyTable, setDataMyTable] = useState([]);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -188,6 +191,16 @@ const AllTasksToday = () => {
     return formattedTime;
   };
 
+  let active = 2;
+  let items = [];
+  for (let number = 1; number <= 5; number++) {
+    items.push(
+      <Pagination.Item key={number} active={number === active}>
+        {number}
+      </Pagination.Item>
+    );
+  }
+
   const compareDate = () => {
     const today = new Date();
     const year = today.getFullYear();
@@ -237,7 +250,7 @@ const AllTasksToday = () => {
     })
       .then((response) => {
         const { data } = response;
-        console.log(data);
+        // console.log(data);
         dispatch(HandleClickDateUser(data));
         setLoader(false);
       })
@@ -410,6 +423,60 @@ const AllTasksToday = () => {
     </>
   );
 
+  const handleChangePage = (data) => {
+    console.log(data);
+  };
+
+  // const columns = React.useMemo(
+  //   () => [
+  //     {
+  //       Header: '№',
+  //       accessor: 'number',
+  //     },
+  //     {
+  //       Header: 'Ijrochilar',
+  //       accessor: 'ijrochi',
+  //     },
+  //     {
+  //       Header: 'fayllar',
+  //       accessor: 'fayl',
+  //     },
+  //     {
+  //       Header: 'boshlanish sanasi',
+  //       accessor: 'start',
+  //     },
+  //     {
+  //       Header: 'tugash sanasi',
+  //       accessor: 'end',
+  //     },
+  //     {
+  //       Header: 'xolati',
+  //       accessor: 'status',
+  //     },
+  //     {
+  //       Header: 'Tarix',
+  //       accessor: 'hist',
+  //     },
+  //     {
+  //       Header: 'Holat qoshish',
+  //       accessor: 'add',
+  //     },
+  //   ],
+  //   []
+  // );
+  // let data = [];
+
+  // console.log(userInfo);
+
+  // console.log(userAction.clickDate);
+  // console.log(dataMyTable);
+  // const data = useMemo(() => myDataInf(), []);
+
+  // console.log(dataMyTable);
+  // const tableInstance = useTable({ columns, data: dataMyTable });
+  // const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
+  //   tableInstance;
+
   useEffect(() => {
     if (!localStorage.getItem('userToken')) {
       navigate('/');
@@ -422,6 +489,139 @@ const AllTasksToday = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // useEffect(() => {
+  //   if (userAction.clickDate) {
+  //     if (userAction.clickDate.length > 0) {
+  //       setDataMyTable([]);
+  //       userAction.clickDate.map((e, i) => {
+  //         let obj = {
+  //           number: e.id,
+  //           ijrochi: [
+  //             e.users
+  //               ? e.users.map((user, i) => (
+  //                   <span key={i} className="badge bg-secondary">
+  //                     {user}
+  //                   </span>
+  //                 ))
+  //               : null,
+  //           ],
+
+  //           fayl: [
+  //             e.attachments.length > 0 ? (
+  //               e.attachments.map((e, i) => (
+  //                 <a
+  //                   key={i}
+  //                   href={globalURL + e.path}
+  //                   target="_blank"
+  //                   download
+  //                   rel="noreferrer"
+  //                 >
+  //                   <span title={e.key}>
+  //                     <FileIcon extension={e.ext} {...defaultStyles[e.ext]} />
+  //                   </span>
+  //                 </a>
+  //               ))
+  //             ) : (
+  //               <p>{t('tasks.fileNo')}</p>
+  //             ),
+  //           ],
+  //           start: e.start_date,
+  //           end: e.end_date,
+  //           status: (
+  //             <div
+  //               className={
+  //                 e.status === 2
+  //                   ? 'badge bg-warning'
+  //                   : e.status === 1
+  //                   ? 'badge bg-danger text-white'
+  //                   : e.status === 3
+  //                   ? 'badge bg-info text-white'
+  //                   : e.status === 4
+  //                   ? 'badge bg-success text-white'
+  //                   : 'badge bg-dark text-white'
+  //               }
+  //             >
+  //               {e.status === 2
+  //                 ? t('calendar.bjdti')
+  //                 : e.status === 1
+  //                 ? t('calendar.bjdm')
+  //                 : e.status === 3
+  //                 ? t('calendar.bjd')
+  //                 : e.status === 4
+  //                 ? t('calendar.tasdiq')
+  //                 : e.status === 5
+  //                 ? t('calendar.dead')
+  //                 : t('calendar.no')}
+  //             </div>
+  //           ),
+  //           hist: (
+  //             <div className="history text-center ">
+  //               {e.history.length > 0 ? (
+  //                 <>
+  //                   <button
+  //                     onClick={() => handleClickHist(e.history)}
+  //                     className="btn btn-link btn-hist"
+  //                   >
+  //                     {e.history[e.history.length - 1].desc}
+  //                   </button>
+  //                 </>
+  //               ) : (
+  //                 <p>{t('tasks.infoNo')}</p>
+  //               )}
+  //             </div>
+  //           ),
+
+  //           add: (
+  //             <div className="text-center">
+  //               <div className="row flex-md-wrap">
+  //                 <div className="col-12 m-1">
+  //                   <button
+  //                     onClick={() => handleClickPlus(e.id)}
+  //                     className="btn btn-outline-opus d-flex justify-content-between align-items-center mx-auto"
+  //                   >
+  //                     <AiOutlinePlus />
+  //                   </button>
+  //                 </div>
+  //                 {localStorage.getItem('role') === 'admin' ||
+  //                 localStorage.getItem('role') === 'adminClicked' ? (
+  //                   <>
+  //                     {e.status === 3 ? (
+  //                       <div className="col-12 m-1">
+  //                         <button
+  //                           onClick={() => handleChack(e.id)}
+  //                           className="btn btn-outline-opus d-flex justify-content-between align-items-center mx-auto"
+  //                         >
+  //                           <AiOutlineCheck />
+  //                         </button>
+  //                       </div>
+  //                     ) : null}
+  //                   </>
+  //                 ) : null}
+  //                 {localStorage.getItem('role') === 'admin' ||
+  //                 localStorage.getItem('role') === 'adminClicked' ||
+  //                 !e.isAdmin ? (
+  //                   <>
+  //                     <div className="col-12 m-1">
+  //                       <button
+  //                         onClick={() => handleClickEdit(e.id)}
+  //                         className="btn btn-outline-opus d-flex justify-content-between align-items-center mx-auto"
+  //                       >
+  //                         <AiOutlineEdit />
+  //                       </button>
+  //                     </div>
+  //                   </>
+  //                 ) : null}
+  //               </div>
+  //             </div>
+  //           ),
+  //         };
+  //         setDataMyTable((dataMyTable) => [...dataMyTable, { obj }]);
+  //         // dispatch(AllInfosTaskCalendar(obj));
+  //       });
+  //       console.log(dataMyTable);
+  //     }
+  //   }
+  // }, [userAction.clickDate]);
   return (
     <>
       <div className="container">
@@ -433,70 +633,69 @@ const AllTasksToday = () => {
 
             <div className="col-md-6 text-end">{userAction.clickedDate}</div>
           </div>
+
           {userAction.clickDate.length > 0 ? (
-            <div className="table-responsive">
-              <table className="table table-bordered">
-                <thead>
-                  <tr>
-                    <th scope="col">№</th>
-                    <th scope="col"> {t('tasks.desc')}</th>
-
-                    <th scope="col"> {t('tasks.linked')}</th>
-
-                    <th scope="col">{t('tasks.files')}</th>
-                    <th scope="col">{t('tasks.start')}</th>
-                    <th scope="col">{t('tasks.end')}</th>
-                    <th scope="col">{t('tasks.status')}</th>
-                    <th scope="col">{t('tasks.hist')}</th>
-                    <th scope="col">{t('tasks.plus')}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {userAction.clickDate.map((e, index) => (
-                    <tr key={index}>
-                      <th scope="row" className={e.isAdmin ? 'rib' : null}>
-                        {e.id}
-                      </th>
-                      <td>{e.desc}</td>
-
-                      <td>
+            <>
+              <Table className="borderT">
+                <Thead>
+                  <Tr>
+                    <Th>№</Th>
+                    <Th> {t('tasks.desc')}</Th>
+                    <Th>{t('tasks.linked')}</Th>
+                    <Th>{t('tasks.files')}</Th>
+                    <Th>{t('tasks.start')}</Th>
+                    <Th>{t('tasks.end')}</Th>
+                    <Th>{t('tasks.status')}</Th>
+                    <Th>{t('tasks.hist')}</Th>
+                    <Th>{t('tasks.plus')}</Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {userAction.clickDate.map((e, i) => (
+                    <Tr key={i}>
+                      <Td className={e.isAdmin ? 'rib' : null}>{e.id}</Td>
+                      <Td>{e.desc}</Td>
+                      <Td>
                         {e.users
                           ? e.users.map((user, i) => (
-                              <span key={i} className="badge bg-secondary">
+                              <span
+                                key={i}
+                                className="badge badge-pill bg-secondary"
+                              >
                                 {user}
                               </span>
                             ))
                           : null}
-                      </td>
+                      </Td>
+                      <Td>
+                        <div className="iconDiv">
+                          {e.attachments.length > 0 ? (
+                            e.attachments.map((e, i) => (
+                              <a
+                                key={i}
+                                href={globalURL + e.path}
+                                target="_blank"
+                                download
+                                rel="noreferrer"
+                              >
+                                <span title={e.key}>
+                                  <FileIcon
+                                    extension={e.ext}
+                                    {...defaultStyles[e.ext]}
+                                  />
+                                </span>
+                              </a>
+                            ))
+                          ) : (
+                            <p>{t('tasks.fileNo')}</p>
+                          )}
+                        </div>
+                      </Td>
 
-                      <td className="iconDiv">
-                        {e.attachments.length > 0 ? (
-                          e.attachments.map((e, i) => (
-                            <a
-                              key={i}
-                              href={globalURL + e.path}
-                              target="_blank"
-                              download
-                              rel="noreferrer"
-                            >
-                              <span title={e.key}>
-                                <FileIcon
-                                  extension={e.ext}
-                                  {...defaultStyles[e.ext]}
-                                />
-                              </span>
-                            </a>
-                          ))
-                        ) : (
-                          <p>{t('tasks.fileNo')}</p>
-                        )}
-                      </td>
-
-                      <td>{e.start_date}</td>
-
-                      <td>{e.end_date}</td>
-
-                      <td className="sts">
+                      <Td>{e.start_date}</Td>
+                      <Td>{e.end_date}</Td>
+                      <Td className="sts">
+                        {' '}
                         <div
                           className={
                             e.status === 2
@@ -522,9 +721,9 @@ const AllTasksToday = () => {
                             ? t('calendar.dead')
                             : t('calendar.no')}
                         </div>
-                      </td>
-
-                      <td className="history text-center ">
+                      </Td>
+                      <Td className="history text-center ">
+                        {' '}
                         {e.history.length > 0 ? (
                           <>
                             <button
@@ -537,9 +736,8 @@ const AllTasksToday = () => {
                         ) : (
                           <p>{t('tasks.infoNo')}</p>
                         )}
-                      </td>
-
-                      <td className="text-center">
+                      </Td>
+                      <Td className="text-center">
                         <div className="row flex-md-wrap">
                           <div className="col-12 m-1">
                             <button
@@ -579,12 +777,16 @@ const AllTasksToday = () => {
                             </>
                           ) : null}
                         </div>
-                      </td>
-                    </tr>
+                      </Td>
+                    </Tr>
                   ))}
-                </tbody>
-              </table>
-            </div>
+                </Tbody>
+              </Table>
+
+              <br />
+              <Pagination>{items}</Pagination>
+              <br />
+            </>
           ) : (
             <h2 className="text-center py-2 h4">{t('tasks.noGetInfo')}</h2>
           )}
@@ -598,25 +800,24 @@ const AllTasksToday = () => {
             <Modal.Title>{t('modal.hist')}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <div className="table-responsive">
-              <table className="table ">
-                <thead>
-                  <tr>
-                    <th scope="col">№</th>
-                    <th scope="col">{t('tasks.desc')}</th>
-                    <th scope="col">{t('tasks.files')}</th>
-                    <th scope="col">{t('modal.name')}</th>
-                    <th scope="col">{t('modal.depart')}</th>
-                    <th scope="col">{t('modal.time')}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {userAction.clickedHistoryRedux.map((e, i) => (
-                    <tr key={i}>
-                      <th scope="row">{i + 1}</th>
-                      <td>{e.desc}</td>
-
-                      <td className="iconDiv">
+            <Table className="borderT">
+              <Thead>
+                <Tr>
+                  <Th>№</Th>
+                  <Th> {t('tasks.desc')}</Th>
+                  <Th>{t('tasks.files')}</Th>
+                  <Th>{t('modal.name')}</Th>
+                  <Th>{t('modal.depart')}</Th>
+                  <Th>{t('modal.time')}</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {userAction.clickedHistoryRedux.map((e, i) => (
+                  <Tr key={i}>
+                    <Td>{i + 1}</Td>
+                    <Td>{e.desc}</Td>
+                    <Td>
+                      <div className="iconDiv">
                         {e.attachment.length > 0 ? (
                           e.attachment.map((e, i) => (
                             <a
@@ -637,16 +838,16 @@ const AllTasksToday = () => {
                         ) : (
                           <p>{t('tasks.fileNo')}</p>
                         )}
-                      </td>
+                      </div>
+                    </Td>
 
-                      <td>{e.user_name}</td>
-                      <td>{e.user_depart}</td>
-                      <td className="date">{converTime(e.timestamp)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                    <Td>{e.user_name}</Td>
+                    <Td>{e.user_depart}</Td>
+                    <Td>{converTime(e.timestamp)}</Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
           </Modal.Body>
         </Modal>
       ) : null}

@@ -11,7 +11,9 @@ const initialState = {
   allUsers: {},
   loading: true,
 };
-
+const allInfosTask = {
+  tasksAll: [],
+};
 export const aunthUser = (state = initialState, { type, payload }) => {
   switch (type) {
     case ActionTypes.USER_AUNTIFICATED:
@@ -47,6 +49,16 @@ export const clickDateUser = (state = initialState, { type, payload }) => {
       return { ...state, clickedHistoryRedux: payload };
     case ActionTypes.ALL_USERS:
       return { ...state, allUsers: payload };
+    default:
+      return state;
+  }
+};
+
+export const allTasks = (state = allInfosTask, { type, payload }) => {
+  switch (type) {
+    case ActionTypes.ALL_INFOS_TASKS:
+      return { ...state, tasksAll: payload };
+
     default:
       return state;
   }

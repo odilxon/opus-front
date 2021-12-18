@@ -48,3 +48,9 @@ export const HandleAllUsers = (data) => {
     payload: data,
   };
 };
+export const AllInfosTaskCalendar = (data) => {
+  return {
+    type: ActionTypes.ALL_INFOS_TASKS,
+    payload: data,
+  };
+};

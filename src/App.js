@@ -13,6 +13,7 @@ import AdminPage from './components/pages/AdminPage';
 import ERRPage from './components/pages/ERRPage';
 import AllTasksToday from './components/pages/AllTasksToday';
 import UserAllTasks from './components/pages/UserAllTasks';
+import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css';
 function App() {
   return (
     <>
