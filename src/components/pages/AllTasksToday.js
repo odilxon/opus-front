@@ -22,7 +22,8 @@ import { MultiSelect } from 'react-multi-select-component';
 import LoaderPage from '../LoaderPage';
 import { Table, Thead, Tbody, Tr, Th, Td } from 'react-super-responsive-table';
 import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css';
-import ReactPaginate from 'react-paginate';
+import SortComp from '../SortComp';
+// import ReactPaginate from 'react-paginate';
 const AllTasksToday = () => {
   const [clickHist, setClickHist] = useState(false);
   const [taskId, setTaskId] = useState('');
@@ -36,7 +37,8 @@ const AllTasksToday = () => {
   const [statuss, setStatuss] = useState(false);
   const [end, setEndTime] = useState('');
   const [loader, setLoader] = useState(false);
-  // const [dataMyTable, setDataMyTable] = useState([]);
+  const [dataMyTable, setDataMyTable] = useState([]);
+  const [countOne, setCountOne] = useState(1);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -190,12 +192,135 @@ const AllTasksToday = () => {
       seconds.substr(-2);
     return formattedTime;
   };
+  const handleCountPag = (number) => {
+    setLoader(true);
+    setCountOne(number);
+    setLoader(false);
+  };
 
-  let active = 1;
+  const handleDesc = (arrow) => {
+    console.log(arrow);
+    if (arrow === 'top') {
+      const arr = [...dataMyTable];
+      setDataMyTable(arr.sort((a, b) => a.desc.localeCompare(b.desc)));
+    }
+    if (arrow === 'bottom') {
+      const arr = [...dataMyTable];
+      setDataMyTable(arr.sort((a, b) => b.desc.localeCompare(a.desc)));
+    }
+  };
+  const handleUser = (arrow) => {
+    console.log(arrow);
+    if (arrow === 'top') {
+      const arr = [...dataMyTable];
+      setDataMyTable(arr.sort((a, b) => a.users[0].localeCompare(b.users[0])));
+    }
+    if (arrow === 'bottom') {
+      const arr = [...dataMyTable];
+      setDataMyTable(arr.sort((a, b) => b.users[0].localeCompare(a.users[0])));
+    }
+  };
+
+  const handleSts = (arrow) => {
+    console.log(arrow);
+    if (arrow === 'top') {
+      const arr = [...dataMyTable];
+      setDataMyTable(arr.sort((a, b) => a.status - b.status));
+    }
+    if (arrow === 'bottom') {
+      const arr = [...dataMyTable];
+      setDataMyTable(arr.sort((a, b) => b.status - a.status));
+    }
+  };
+  const handleStart = (arrow) => {
+    console.log(arrow);
+    if (arrow === 'top') {
+      const arr = [...dataMyTable];
+      setDataMyTable(
+        arr.sort(
+          (a, b) =>
+            `${
+              a.start_date.slice(0, 4) +
+              a.start_date.slice(5, 7) +
+              a.start_date.slice(8, 9)
+            }` -
+            `${
+              b.start_date.slice(0, 4) +
+              b.start_date.slice(5, 7) +
+              b.start_date.slice(8, 9)
+            }`
+        )
+      );
+    }
+    if (arrow === 'bottom') {
+      const arr = [...dataMyTable];
+      setDataMyTable(
+        arr.sort(
+          (b, a) =>
+            `${
+              a.start_date.slice(0, 4) +
+              a.start_date.slice(5, 7) +
+              a.start_date.slice(8, 9)
+            }` -
+            `${
+              b.start_date.slice(0, 4) +
+              b.start_date.slice(5, 7) +
+              b.start_date.slice(8, 9)
+            }`
+        )
+      );
+    }
+  };
+  const handleEnd = (arrow) => {
+    console.log(arrow);
+    if (arrow === 'top') {
+      const arr = [...dataMyTable];
+      setDataMyTable(
+        arr.sort(
+          (a, b) =>
+            `${
+              a.start_date.slice(0, 4) +
+              a.start_date.slice(5, 7) +
+              a.start_date.slice(8, 9)
+            }` -
+            `${
+              b.start_date.slice(0, 4) +
+              b.start_date.slice(5, 7) +
+              b.start_date.slice(8, 9)
+            }`
+        )
+      );
+    }
+    if (arrow === 'bottom') {
+      const arr = [...dataMyTable];
+      setDataMyTable(
+        arr.sort(
+          (b, a) =>
+            `${
+              a.start_date.slice(0, 4) +
+              a.start_date.slice(5, 7) +
+              a.start_date.slice(8, 9)
+            }` -
+            `${
+              b.start_date.slice(0, 4) +
+              b.start_date.slice(5, 7) +
+              b.start_date.slice(8, 9)
+            }`
+        )
+      );
+    }
+  };
+
+  console.log(dataMyTable);
   let items = [];
-  for (let number = 1; number <= 5; number++) {
+  let pagesCount = Math.ceil(dataMyTable.length / 10);
+  for (let number = 1; number <= pagesCount; number++) {
     items.push(
-      <Pagination.Item key={number} active={number === active}>
+      <Pagination.Item
+        key={number}
+        onClick={() => handleCountPag(number)}
+        active={number === countOne}
+      >
         {number}
       </Pagination.Item>
     );
@@ -423,9 +548,9 @@ const AllTasksToday = () => {
     </>
   );
 
-  const handleChangePage = (data) => {
-    console.log(data);
-  };
+  // const handleChangePage = (data) => {
+  //   console.log(data);
+  // };
 
   // const columns = React.useMemo(
   //   () => [
@@ -489,139 +614,140 @@ const AllTasksToday = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // useEffect(() => {
-  //   if (userAction.clickDate) {
-  //     if (userAction.clickDate.length > 0) {
-  //       setDataMyTable([]);
-  //       userAction.clickDate.map((e, i) => {
-  //         let obj = {
-  //           number: e.id,
-  //           ijrochi: [
-  //             e.users
-  //               ? e.users.map((user, i) => (
-  //                   <span key={i} className="badge bg-secondary">
-  //                     {user}
-  //                   </span>
-  //                 ))
-  //               : null,
-  //           ],
+  useEffect(() => {
+    if (userAction.clickDate) {
+      if (userAction.clickDate.length > 0) {
+        setDataMyTable([]);
+        // userAction.clickDate.map((e, i) => {
+        //   let obj = {
+        //     number: e.id,
+        //     ijrochi: [
+        //       e.users
+        //         ? e.users.map((user, i) => (
+        //             <span key={i} className="badge bg-secondary">
+        //               {user}
+        //             </span>
+        //           ))
+        //         : null,
+        //     ],
 
-  //           fayl: [
-  //             e.attachments.length > 0 ? (
-  //               e.attachments.map((e, i) => (
-  //                 <a
-  //                   key={i}
-  //                   href={globalURL + e.path}
-  //                   target="_blank"
-  //                   download
-  //                   rel="noreferrer"
-  //                 >
-  //                   <span title={e.key}>
-  //                     <FileIcon extension={e.ext} {...defaultStyles[e.ext]} />
-  //                   </span>
-  //                 </a>
-  //               ))
-  //             ) : (
-  //               <p>{t('tasks.fileNo')}</p>
-  //             ),
-  //           ],
-  //           start: e.start_date,
-  //           end: e.end_date,
-  //           status: (
-  //             <div
-  //               className={
-  //                 e.status === 2
-  //                   ? 'badge bg-warning'
-  //                   : e.status === 1
-  //                   ? 'badge bg-danger text-white'
-  //                   : e.status === 3
-  //                   ? 'badge bg-info text-white'
-  //                   : e.status === 4
-  //                   ? 'badge bg-success text-white'
-  //                   : 'badge bg-dark text-white'
-  //               }
-  //             >
-  //               {e.status === 2
-  //                 ? t('calendar.bjdti')
-  //                 : e.status === 1
-  //                 ? t('calendar.bjdm')
-  //                 : e.status === 3
-  //                 ? t('calendar.bjd')
-  //                 : e.status === 4
-  //                 ? t('calendar.tasdiq')
-  //                 : e.status === 5
-  //                 ? t('calendar.dead')
-  //                 : t('calendar.no')}
-  //             </div>
-  //           ),
-  //           hist: (
-  //             <div className="history text-center ">
-  //               {e.history.length > 0 ? (
-  //                 <>
-  //                   <button
-  //                     onClick={() => handleClickHist(e.history)}
-  //                     className="btn btn-link btn-hist"
-  //                   >
-  //                     {e.history[e.history.length - 1].desc}
-  //                   </button>
-  //                 </>
-  //               ) : (
-  //                 <p>{t('tasks.infoNo')}</p>
-  //               )}
-  //             </div>
-  //           ),
+        //     fayl: [
+        //       e.attachments.length > 0 ? (
+        //         e.attachments.map((e, i) => (
+        //           <a
+        //             key={i}
+        //             href={globalURL + e.path}
+        //             target="_blank"
+        //             download
+        //             rel="noreferrer"
+        //           >
+        //             <span title={e.key}>
+        //               <FileIcon extension={e.ext} {...defaultStyles[e.ext]} />
+        //             </span>
+        //           </a>
+        //         ))
+        //       ) : (
+        //         <p>{t('tasks.fileNo')}</p>
+        //       ),
+        //     ],
+        //     start: e.start_date,
+        //     end: e.end_date,
+        //     status: (
+        //       <div
+        //         className={
+        //           e.status === 2
+        //             ? 'badge bg-warning'
+        //             : e.status === 1
+        //             ? 'badge bg-danger text-white'
+        //             : e.status === 3
+        //             ? 'badge bg-info text-white'
+        //             : e.status === 4
+        //             ? 'badge bg-success text-white'
+        //             : 'badge bg-dark text-white'
+        //         }
+        //       >
+        //         {e.status === 2
+        //           ? t('calendar.bjdti')
+        //           : e.status === 1
+        //           ? t('calendar.bjdm')
+        //           : e.status === 3
+        //           ? t('calendar.bjd')
+        //           : e.status === 4
+        //           ? t('calendar.tasdiq')
+        //           : e.status === 5
+        //           ? t('calendar.dead')
+        //           : t('calendar.no')}
+        //       </div>
+        //     ),
+        //     hist: (
+        //       <div className="history text-center ">
+        //         {e.history.length > 0 ? (
+        //           <>
+        //             <button
+        //               onClick={() => handleClickHist(e.history)}
+        //               className="btn btn-link btn-hist"
+        //             >
+        //               {e.history[e.history.length - 1].desc}
+        //             </button>
+        //           </>
+        //         ) : (
+        //           <p>{t('tasks.infoNo')}</p>
+        //         )}
+        //       </div>
+        //     ),
 
-  //           add: (
-  //             <div className="text-center">
-  //               <div className="row flex-md-wrap">
-  //                 <div className="col-12 m-1">
-  //                   <button
-  //                     onClick={() => handleClickPlus(e.id)}
-  //                     className="btn btn-outline-opus d-flex justify-content-between align-items-center mx-auto"
-  //                   >
-  //                     <AiOutlinePlus />
-  //                   </button>
-  //                 </div>
-  //                 {localStorage.getItem('role') === 'admin' ||
-  //                 localStorage.getItem('role') === 'adminClicked' ? (
-  //                   <>
-  //                     {e.status === 3 ? (
-  //                       <div className="col-12 m-1">
-  //                         <button
-  //                           onClick={() => handleChack(e.id)}
-  //                           className="btn btn-outline-opus d-flex justify-content-between align-items-center mx-auto"
-  //                         >
-  //                           <AiOutlineCheck />
-  //                         </button>
-  //                       </div>
-  //                     ) : null}
-  //                   </>
-  //                 ) : null}
-  //                 {localStorage.getItem('role') === 'admin' ||
-  //                 localStorage.getItem('role') === 'adminClicked' ||
-  //                 !e.isAdmin ? (
-  //                   <>
-  //                     <div className="col-12 m-1">
-  //                       <button
-  //                         onClick={() => handleClickEdit(e.id)}
-  //                         className="btn btn-outline-opus d-flex justify-content-between align-items-center mx-auto"
-  //                       >
-  //                         <AiOutlineEdit />
-  //                       </button>
-  //                     </div>
-  //                   </>
-  //                 ) : null}
-  //               </div>
-  //             </div>
-  //           ),
-  //         };
-  //         setDataMyTable((dataMyTable) => [...dataMyTable, { obj }]);
-  //         // dispatch(AllInfosTaskCalendar(obj));
-  //       });
-  //       console.log(dataMyTable);
-  //     }
-  //   }
-  // }, [userAction.clickDate]);
+        //     add: (
+        //       <div className="text-center">
+        //         <div className="row flex-md-wrap">
+        //           <div className="col-12 m-1">
+        //             <button
+        //               onClick={() => handleClickPlus(e.id)}
+        //               className="btn btn-outline-opus d-flex justify-content-between align-items-center mx-auto"
+        //             >
+        //               <AiOutlinePlus />
+        //             </button>
+        //           </div>
+        //           {localStorage.getItem('role') === 'admin' ||
+        //           localStorage.getItem('role') === 'adminClicked' ? (
+        //             <>
+        //               {e.status === 3 ? (
+        //                 <div className="col-12 m-1">
+        //                   <button
+        //                     onClick={() => handleChack(e.id)}
+        //                     className="btn btn-outline-opus d-flex justify-content-between align-items-center mx-auto"
+        //                   >
+        //                     <AiOutlineCheck />
+        //                   </button>
+        //                 </div>
+        //               ) : null}
+        //             </>
+        //           ) : null}
+        //           {localStorage.getItem('role') === 'admin' ||
+        //           localStorage.getItem('role') === 'adminClicked' ||
+        //           !e.isAdmin ? (
+        //             <>
+        //               <div className="col-12 m-1">
+        //                 <button
+        //                   onClick={() => handleClickEdit(e.id)}
+        //                   className="btn btn-outline-opus d-flex justify-content-between align-items-center mx-auto"
+        //                 >
+        //                   <AiOutlineEdit />
+        //                 </button>
+        //               </div>
+        //             </>
+        //           ) : null}
+        //         </div>
+        //       </div>
+        //     ),
+        //   };
+        //   setDataMyTable((dataMyTable) => [...dataMyTable, { obj }]);
+        //   // dispatch(AllInfosTaskCalendar(obj));
+        // });
+        setDataMyTable(userAction.clickDate);
+        // console.log(dataMyTable);
+      }
+    }
+  }, [userAction.clickDate]);
   return (
     <>
       <div className="container">
@@ -634,156 +760,181 @@ const AllTasksToday = () => {
             <div className="col-md-6 text-end">{userAction.clickedDate}</div>
           </div>
 
-          {userAction.clickDate.length > 0 ? (
+          {dataMyTable.length > 0 ? (
             <>
               <Table className="borderT">
                 <Thead>
                   <Tr>
                     <Th>№</Th>
-                    <Th> {t('tasks.desc')}</Th>
-                    <Th>{t('tasks.linked')}</Th>
+                    <Th>
+                      <div className="headerTab">
+                        {t('tasks.desc')} <SortComp handleDesc={handleDesc} />
+                      </div>
+                    </Th>
+                    <Th>
+                      <div className="headerTab">
+                        {t('tasks.linked')} <SortComp handleUser={handleUser} />
+                      </div>
+                    </Th>
                     <Th>{t('tasks.files')}</Th>
-                    <Th>{t('tasks.start')}</Th>
-                    <Th>{t('tasks.end')}</Th>
-                    <Th>{t('tasks.status')}</Th>
+                    <Th>
+                      <div className="headerTab">
+                        {t('tasks.start')}{' '}
+                        <SortComp handleStart={handleStart} />
+                      </div>
+                    </Th>
+                    <Th>
+                      <div className="headerTab">
+                        {t('tasks.end')}
+                        <SortComp handleEnd={handleEnd} />
+                      </div>
+                    </Th>
+                    <Th>
+                      <div className="headerTab">
+                        {t('tasks.status')} <SortComp handleSts={handleSts} />
+                      </div>
+                    </Th>
                     <Th>{t('tasks.hist')}</Th>
                     <Th>{t('tasks.plus')}</Th>
                   </Tr>
                 </Thead>
                 <Tbody>
-                  {userAction.clickDate.map((e, i) => (
-                    <Tr key={i}>
-                      <Td className={e.isAdmin ? 'rib' : null}>{e.id}</Td>
-                      <Td>{e.desc}</Td>
-                      <Td>
-                        {e.users
-                          ? e.users.map((user, i) => (
-                              <span
-                                key={i}
-                                className="badge badge-pill bg-secondary"
-                              >
-                                {user}
-                              </span>
-                            ))
-                          : null}
-                      </Td>
-                      <Td>
-                        <div className="iconDiv">
-                          {e.attachments.length > 0 ? (
-                            e.attachments.map((e, i) => (
-                              <a
-                                key={i}
-                                href={globalURL + e.path}
-                                target="_blank"
-                                download
-                                rel="noreferrer"
-                              >
-                                <span title={e.key}>
-                                  <FileIcon
-                                    extension={e.ext}
-                                    {...defaultStyles[e.ext]}
-                                  />
+                  {dataMyTable
+                    .slice(countOne * 10 - 10, countOne * 10)
+                    .map((e, i) => (
+                      <Tr key={i}>
+                        <Td className={e.isAdmin ? 'rib' : null}>{e.id}</Td>
+                        <Td>{e.desc}</Td>
+                        <Td>
+                          {e.users
+                            ? e.users.map((user, i) => (
+                                <span
+                                  key={i}
+                                  className="badge badge-pill bg-secondary"
+                                >
+                                  {user}
                                 </span>
-                              </a>
-                            ))
-                          ) : (
-                            <p>{t('tasks.fileNo')}</p>
-                          )}
-                        </div>
-                      </Td>
-
-                      <Td>{e.start_date}</Td>
-                      <Td>{e.end_date}</Td>
-                      <Td className="sts">
-                        {' '}
-                        <div
-                          className={
-                            e.status === 2
-                              ? 'badge bg-warning'
-                              : e.status === 1
-                              ? 'badge bg-danger text-white'
-                              : e.status === 3
-                              ? 'badge bg-info text-white'
-                              : e.status === 4
-                              ? 'badge bg-success text-white'
-                              : 'badge bg-dark text-white'
-                          }
-                        >
-                          {e.status === 2
-                            ? t('calendar.bjdti')
-                            : e.status === 1
-                            ? t('calendar.bjdm')
-                            : e.status === 3
-                            ? t('calendar.bjd')
-                            : e.status === 4
-                            ? t('calendar.tasdiq')
-                            : e.status === 5
-                            ? t('calendar.dead')
-                            : t('calendar.no')}
-                        </div>
-                      </Td>
-                      <Td className="history text-center ">
-                        {' '}
-                        {e.history.length > 0 ? (
-                          <>
-                            <button
-                              onClick={() => handleClickHist(e.history)}
-                              className="btn btn-link btn-hist"
-                            >
-                              {e.history[e.history.length - 1].desc}
-                            </button>
-                          </>
-                        ) : (
-                          <p>{t('tasks.infoNo')}</p>
-                        )}
-                      </Td>
-                      <Td className="text-center">
-                        <div className="row flex-md-wrap">
-                          <div className="col-12 m-1">
-                            <button
-                              onClick={() => handleClickPlus(e.id)}
-                              className="btn btn-outline-opus d-flex justify-content-between align-items-center mx-auto"
-                            >
-                              <AiOutlinePlus />
-                            </button>
+                              ))
+                            : null}
+                        </Td>
+                        <Td>
+                          <div className="iconDiv">
+                            {e.attachments.length > 0 ? (
+                              e.attachments.map((e, i) => (
+                                <a
+                                  key={i}
+                                  href={globalURL + e.path}
+                                  target="_blank"
+                                  download
+                                  rel="noreferrer"
+                                >
+                                  <span title={e.key}>
+                                    <FileIcon
+                                      extension={e.ext}
+                                      {...defaultStyles[e.ext]}
+                                    />
+                                  </span>
+                                </a>
+                              ))
+                            ) : (
+                              <p>{t('tasks.fileNo')}</p>
+                            )}
                           </div>
-                          {localStorage.getItem('role') === 'admin' ||
-                          localStorage.getItem('role') === 'adminClicked' ? (
+                        </Td>
+
+                        <Td>{e.start_date}</Td>
+                        <Td>{e.end_date}</Td>
+                        <Td className="sts">
+                          {' '}
+                          <div
+                            className={
+                              e.status === 2
+                                ? 'badge bg-warning'
+                                : e.status === 1
+                                ? 'badge bg-danger text-white'
+                                : e.status === 3
+                                ? 'badge bg-info text-white'
+                                : e.status === 4
+                                ? 'badge bg-success text-white'
+                                : 'badge bg-dark text-white'
+                            }
+                          >
+                            {e.status === 2
+                              ? t('calendar.bjdti')
+                              : e.status === 1
+                              ? t('calendar.bjdm')
+                              : e.status === 3
+                              ? t('calendar.bjd')
+                              : e.status === 4
+                              ? t('calendar.tasdiq')
+                              : e.status === 5
+                              ? t('calendar.dead')
+                              : t('calendar.no')}
+                          </div>
+                        </Td>
+                        <Td className="history text-center ">
+                          {' '}
+                          {e.history.length > 0 ? (
                             <>
-                              {e.status === 3 ? (
+                              <button
+                                onClick={() => handleClickHist(e.history)}
+                                className="btn btn-link btn-hist"
+                              >
+                                {e.history[e.history.length - 1].desc}
+                              </button>
+                            </>
+                          ) : (
+                            <p>{t('tasks.infoNo')}</p>
+                          )}
+                        </Td>
+                        <Td className="text-center">
+                          <div className="row flex-md-wrap">
+                            <div className="col-12 m-1">
+                              <button
+                                onClick={() => handleClickPlus(e.id)}
+                                className="btn btn-outline-opus d-flex justify-content-between align-items-center mx-auto"
+                              >
+                                <AiOutlinePlus />
+                              </button>
+                            </div>
+                            {localStorage.getItem('role') === 'admin' ||
+                            localStorage.getItem('role') === 'adminClicked' ? (
+                              <>
+                                {e.status === 3 ? (
+                                  <div className="col-12 m-1">
+                                    <button
+                                      onClick={() => handleChack(e.id)}
+                                      className="btn btn-outline-opus d-flex justify-content-between align-items-center mx-auto"
+                                    >
+                                      <AiOutlineCheck />
+                                    </button>
+                                  </div>
+                                ) : null}
+                              </>
+                            ) : null}
+                            {localStorage.getItem('role') === 'admin' ||
+                            localStorage.getItem('role') === 'adminClicked' ||
+                            !e.isAdmin ? (
+                              <>
                                 <div className="col-12 m-1">
                                   <button
-                                    onClick={() => handleChack(e.id)}
+                                    onClick={() => handleClickEdit(e.id)}
                                     className="btn btn-outline-opus d-flex justify-content-between align-items-center mx-auto"
                                   >
-                                    <AiOutlineCheck />
+                                    <AiOutlineEdit />
                                   </button>
                                 </div>
-                              ) : null}
-                            </>
-                          ) : null}
-                          {localStorage.getItem('role') === 'admin' ||
-                          localStorage.getItem('role') === 'adminClicked' ||
-                          !e.isAdmin ? (
-                            <>
-                              <div className="col-12 m-1">
-                                <button
-                                  onClick={() => handleClickEdit(e.id)}
-                                  className="btn btn-outline-opus d-flex justify-content-between align-items-center mx-auto"
-                                >
-                                  <AiOutlineEdit />
-                                </button>
-                              </div>
-                            </>
-                          ) : null}
-                        </div>
-                      </Td>
-                    </Tr>
-                  ))}
+                              </>
+                            ) : null}
+                          </div>
+                        </Td>
+                      </Tr>
+                    ))}
                 </Tbody>
               </Table>
 
               <br />
+
               <Pagination variant="btn-opus">{items}</Pagination>
 
               <br />
