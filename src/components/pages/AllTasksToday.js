@@ -191,7 +191,7 @@ const AllTasksToday = () => {
     return formattedTime;
   };
 
-  let active = 2;
+  let active = 1;
   let items = [];
   for (let number = 1; number <= 5; number++) {
     items.push(
@@ -784,7 +784,8 @@ const AllTasksToday = () => {
               </Table>
 
               <br />
-              <Pagination>{items}</Pagination>
+              <Pagination variant="btn-opus">{items}</Pagination>
+
               <br />
             </>
           ) : (
