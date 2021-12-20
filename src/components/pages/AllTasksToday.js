@@ -11,6 +11,7 @@ import {
 } from '../../service';
 import { AiOutlineCheck, AiOutlineEdit, AiOutlinePlus } from 'react-icons/ai';
 import { Button, Modal, Pagination } from 'react-bootstrap';
+// import { Button, Modal } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import {
   HandleClickDateUser,
@@ -24,6 +25,9 @@ import { Table, Thead, Tbody, Tr, Th, Td } from 'react-super-responsive-table';
 import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css';
 import SortComp from '../SortComp';
 // import ReactPaginate from 'react-paginate';
+
+//
+
 const AllTasksToday = () => {
   const [clickHist, setClickHist] = useState(false);
   const [taskId, setTaskId] = useState('');
@@ -39,6 +43,7 @@ const AllTasksToday = () => {
   const [loader, setLoader] = useState(false);
   const [dataMyTable, setDataMyTable] = useState([]);
   const [countOne, setCountOne] = useState(1);
+  const [sortDesc, setSortDesc] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -199,7 +204,6 @@ const AllTasksToday = () => {
   };
 
   const handleDesc = (arrow) => {
-    console.log(arrow);
     if (arrow === 'top') {
       const arr = [...dataMyTable];
       setDataMyTable(arr.sort((a, b) => a.desc.localeCompare(b.desc)));
@@ -208,9 +212,11 @@ const AllTasksToday = () => {
       const arr = [...dataMyTable];
       setDataMyTable(arr.sort((a, b) => b.desc.localeCompare(a.desc)));
     }
+
+    setSortDesc(!sortDesc);
   };
+
   const handleUser = (arrow) => {
-    console.log(arrow);
     if (arrow === 'top') {
       const arr = [...dataMyTable];
       setDataMyTable(arr.sort((a, b) => a.users[0].localeCompare(b.users[0])));
@@ -219,6 +225,7 @@ const AllTasksToday = () => {
       const arr = [...dataMyTable];
       setDataMyTable(arr.sort((a, b) => b.users[0].localeCompare(a.users[0])));
     }
+    setSortDesc(!sortDesc);
   };
 
   const handleSts = (arrow) => {
@@ -231,9 +238,9 @@ const AllTasksToday = () => {
       const arr = [...dataMyTable];
       setDataMyTable(arr.sort((a, b) => b.status - a.status));
     }
+    setSortDesc(!sortDesc);
   };
   const handleStart = (arrow) => {
-    console.log(arrow);
     if (arrow === 'top') {
       const arr = [...dataMyTable];
       setDataMyTable(
@@ -270,9 +277,10 @@ const AllTasksToday = () => {
         )
       );
     }
+
+    setSortDesc(!sortDesc);
   };
   const handleEnd = (arrow) => {
-    console.log(arrow);
     if (arrow === 'top') {
       const arr = [...dataMyTable];
       setDataMyTable(
@@ -309,21 +317,24 @@ const AllTasksToday = () => {
         )
       );
     }
+    setSortDesc(!sortDesc);
   };
 
-  console.log(dataMyTable);
   let items = [];
   let pagesCount = Math.ceil(dataMyTable.length / 10);
-  for (let number = 1; number <= pagesCount; number++) {
-    items.push(
-      <Pagination.Item
-        key={number}
-        onClick={() => handleCountPag(number)}
-        active={number === countOne}
-      >
-        {number}
-      </Pagination.Item>
-    );
+
+  if (pagesCount > 1) {
+    for (let number = 1; number <= pagesCount; number++) {
+      items.push(
+        <Pagination.Item
+          key={number}
+          onClick={() => handleCountPag(number)}
+          active={number === countOne}
+        >
+          {number}
+        </Pagination.Item>
+      );
+    }
   }
 
   const compareDate = () => {
@@ -548,60 +559,6 @@ const AllTasksToday = () => {
     </>
   );
 
-  // const handleChangePage = (data) => {
-  //   console.log(data);
-  // };
-
-  // const columns = React.useMemo(
-  //   () => [
-  //     {
-  //       Header: '№',
-  //       accessor: 'number',
-  //     },
-  //     {
-  //       Header: 'Ijrochilar',
-  //       accessor: 'ijrochi',
-  //     },
-  //     {
-  //       Header: 'fayllar',
-  //       accessor: 'fayl',
-  //     },
-  //     {
-  //       Header: 'boshlanish sanasi',
-  //       accessor: 'start',
-  //     },
-  //     {
-  //       Header: 'tugash sanasi',
-  //       accessor: 'end',
-  //     },
-  //     {
-  //       Header: 'xolati',
-  //       accessor: 'status',
-  //     },
-  //     {
-  //       Header: 'Tarix',
-  //       accessor: 'hist',
-  //     },
-  //     {
-  //       Header: 'Holat qoshish',
-  //       accessor: 'add',
-  //     },
-  //   ],
-  //   []
-  // );
-  // let data = [];
-
-  // console.log(userInfo);
-
-  // console.log(userAction.clickDate);
-  // console.log(dataMyTable);
-  // const data = useMemo(() => myDataInf(), []);
-
-  // console.log(dataMyTable);
-  // const tableInstance = useTable({ columns, data: dataMyTable });
-  // const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
-  //   tableInstance;
-
   useEffect(() => {
     if (!localStorage.getItem('userToken')) {
       navigate('/');
@@ -618,131 +575,7 @@ const AllTasksToday = () => {
     if (userAction.clickDate) {
       if (userAction.clickDate.length > 0) {
         setDataMyTable([]);
-        // userAction.clickDate.map((e, i) => {
-        //   let obj = {
-        //     number: e.id,
-        //     ijrochi: [
-        //       e.users
-        //         ? e.users.map((user, i) => (
-        //             <span key={i} className="badge bg-secondary">
-        //               {user}
-        //             </span>
-        //           ))
-        //         : null,
-        //     ],
 
-        //     fayl: [
-        //       e.attachments.length > 0 ? (
-        //         e.attachments.map((e, i) => (
-        //           <a
-        //             key={i}
-        //             href={globalURL + e.path}
-        //             target="_blank"
-        //             download
-        //             rel="noreferrer"
-        //           >
-        //             <span title={e.key}>
-        //               <FileIcon extension={e.ext} {...defaultStyles[e.ext]} />
-        //             </span>
-        //           </a>
-        //         ))
-        //       ) : (
-        //         <p>{t('tasks.fileNo')}</p>
-        //       ),
-        //     ],
-        //     start: e.start_date,
-        //     end: e.end_date,
-        //     status: (
-        //       <div
-        //         className={
-        //           e.status === 2
-        //             ? 'badge bg-warning'
-        //             : e.status === 1
-        //             ? 'badge bg-danger text-white'
-        //             : e.status === 3
-        //             ? 'badge bg-info text-white'
-        //             : e.status === 4
-        //             ? 'badge bg-success text-white'
-        //             : 'badge bg-dark text-white'
-        //         }
-        //       >
-        //         {e.status === 2
-        //           ? t('calendar.bjdti')
-        //           : e.status === 1
-        //           ? t('calendar.bjdm')
-        //           : e.status === 3
-        //           ? t('calendar.bjd')
-        //           : e.status === 4
-        //           ? t('calendar.tasdiq')
-        //           : e.status === 5
-        //           ? t('calendar.dead')
-        //           : t('calendar.no')}
-        //       </div>
-        //     ),
-        //     hist: (
-        //       <div className="history text-center ">
-        //         {e.history.length > 0 ? (
-        //           <>
-        //             <button
-        //               onClick={() => handleClickHist(e.history)}
-        //               className="btn btn-link btn-hist"
-        //             >
-        //               {e.history[e.history.length - 1].desc}
-        //             </button>
-        //           </>
-        //         ) : (
-        //           <p>{t('tasks.infoNo')}</p>
-        //         )}
-        //       </div>
-        //     ),
-
-        //     add: (
-        //       <div className="text-center">
-        //         <div className="row flex-md-wrap">
-        //           <div className="col-12 m-1">
-        //             <button
-        //               onClick={() => handleClickPlus(e.id)}
-        //               className="btn btn-outline-opus d-flex justify-content-between align-items-center mx-auto"
-        //             >
-        //               <AiOutlinePlus />
-        //             </button>
-        //           </div>
-        //           {localStorage.getItem('role') === 'admin' ||
-        //           localStorage.getItem('role') === 'adminClicked' ? (
-        //             <>
-        //               {e.status === 3 ? (
-        //                 <div className="col-12 m-1">
-        //                   <button
-        //                     onClick={() => handleChack(e.id)}
-        //                     className="btn btn-outline-opus d-flex justify-content-between align-items-center mx-auto"
-        //                   >
-        //                     <AiOutlineCheck />
-        //                   </button>
-        //                 </div>
-        //               ) : null}
-        //             </>
-        //           ) : null}
-        //           {localStorage.getItem('role') === 'admin' ||
-        //           localStorage.getItem('role') === 'adminClicked' ||
-        //           !e.isAdmin ? (
-        //             <>
-        //               <div className="col-12 m-1">
-        //                 <button
-        //                   onClick={() => handleClickEdit(e.id)}
-        //                   className="btn btn-outline-opus d-flex justify-content-between align-items-center mx-auto"
-        //                 >
-        //                   <AiOutlineEdit />
-        //                 </button>
-        //               </div>
-        //             </>
-        //           ) : null}
-        //         </div>
-        //       </div>
-        //     ),
-        //   };
-        //   setDataMyTable((dataMyTable) => [...dataMyTable, { obj }]);
-        //   // dispatch(AllInfosTaskCalendar(obj));
-        // });
         setDataMyTable(userAction.clickDate);
         // console.log(dataMyTable);
       }
@@ -767,35 +600,56 @@ const AllTasksToday = () => {
                   <Tr>
                     <Th>№</Th>
                     <Th>
-                      <div className="headerTab">
-                        {t('tasks.desc')} <SortComp handleDesc={handleDesc} />
+                      <div
+                        onClick={() => handleDesc(sortDesc ? 'top' : 'bottom')}
+                        className="headerTab"
+                      >
+                        {t('tasks.desc')}{' '}
+                        <SortComp isActive={sortDesc} handleDesc={handleDesc} />
                       </div>
                     </Th>
-                    <Th>
-                      <div className="headerTab">
-                        {t('tasks.linked')} <SortComp handleUser={handleUser} />
+                    <Th className="user">
+                      <div
+                        onClick={() => handleUser(sortDesc ? 'top' : 'bottom')}
+                        className="headerTab"
+                      >
+                        {t('tasks.linked')}{' '}
+                        <SortComp isActive={sortDesc} handleUser={handleUser} />
                       </div>
                     </Th>
-                    <Th>{t('tasks.files')}</Th>
-                    <Th>
-                      <div className="headerTab">
+                    <Th className="file">{t('tasks.files')}</Th>
+                    <Th className="time">
+                      <div
+                        onClick={() => handleStart(sortDesc ? 'top' : 'bottom')}
+                        className="headerTab"
+                      >
                         {t('tasks.start')}{' '}
-                        <SortComp handleStart={handleStart} />
+                        <SortComp
+                          isActive={sortDesc}
+                          handleStart={handleStart}
+                        />
                       </div>
                     </Th>
-                    <Th>
-                      <div className="headerTab">
+                    <Th className="time">
+                      <div
+                        onClick={() => handleEnd(sortDesc ? 'top' : 'bottom')}
+                        className="headerTab"
+                      >
                         {t('tasks.end')}
-                        <SortComp handleEnd={handleEnd} />
+                        <SortComp isActive={sortDesc} handleEnd={handleEnd} />
                       </div>
                     </Th>
-                    <Th>
-                      <div className="headerTab">
-                        {t('tasks.status')} <SortComp handleSts={handleSts} />
+                    <Th className="stat">
+                      <div
+                        onClick={() => handleSts(sortDesc ? 'top' : 'bottom')}
+                        className="headerTab "
+                      >
+                        {t('tasks.status')}{' '}
+                        <SortComp isActive={sortDesc} handleSts={handleSts} />
                       </div>
                     </Th>
-                    <Th>{t('tasks.hist')}</Th>
-                    <Th>{t('tasks.plus')}</Th>
+                    <Th className="hist">{t('tasks.hist')}</Th>
+                    <Th className="plus">{t('tasks.plus')}</Th>
                   </Tr>
                 </Thead>
                 <Tbody>
@@ -934,8 +788,9 @@ const AllTasksToday = () => {
               </Table>
 
               <br />
-
-              <Pagination variant="btn-opus">{items}</Pagination>
+              {pagesCount > 1 ? (
+                <Pagination variant="btn-opus">{items}</Pagination>
+              ) : null}
 
               <br />
             </>

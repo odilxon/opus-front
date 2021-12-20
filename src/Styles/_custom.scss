@@ -96,11 +96,14 @@ td {
   justify-content: center;
 }
 .sortComp {
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
   flex-direction: column;
   padding-left: 4px;
+  @media (min-width: 991px) {
+    display: flex;
+  }
   button {
     display: inline-block;
     border: none;
@@ -108,7 +111,7 @@ td {
     background-color: transparent;
     padding: 0;
     margin: 0;
-
+    color: #ccc;
     &.active {
       color: #2a9f86;
     }
@@ -118,4 +121,34 @@ td {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+th.plus {
+  @media (min-width: 991px) {
+    width: 8% !important;
+  }
+}
+th.hist {
+  @media (min-width: 991px) {
+    width: 16% !important;
+  }
+}
+th.stat {
+  @media (min-width: 991px) {
+    width: 12% !important;
+  }
+}
+th.time {
+  @media (min-width: 991px) {
+    width: 10% !important;
+  }
+}
+th.file {
+  @media (min-width: 991px) {
+    width: 6% !important;
+  }
+}
+th.user {
+  @media (min-width: 991px) {
+    width: 10% !important;
+  }
 }
