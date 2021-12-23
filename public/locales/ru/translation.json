@@ -1,5 +1,7 @@
 {
   "lang": "Ру",
+
+  "search": "Search",
   "login": {
     "success": "Вход совершен",
     "warning": "Недостаточно информации",

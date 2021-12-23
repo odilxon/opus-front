@@ -44,6 +44,7 @@ const AllTasksToday = () => {
   const [dataMyTable, setDataMyTable] = useState([]);
   const [countOne, setCountOne] = useState(1);
   const [sortDesc, setSortDesc] = useState(false);
+  const [search, setSearch] = useState('');
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -199,7 +200,23 @@ const AllTasksToday = () => {
   };
   const handleCountPag = (number) => {
     setLoader(true);
-    setCountOne(number);
+    if (number === 'next') {
+      if (countOne + 4 <= Math.ceil(dataMyTable.length / 10)) {
+        setCountOne(countOne + 4);
+      }
+    } else if (number === 'prev') {
+      if (countOne - 4 > 0) {
+        setCountOne(countOne - 4);
+      }
+    } else if (number === 'first') {
+      setCountOne(1);
+    } else if (number === 'last') {
+      // let a = Math.ceil(dataMyTable.length / 10) * 10 + 1;
+      setCountOne(Math.ceil(dataMyTable.length / 10));
+      // console.log(countOne);
+    } else {
+      setCountOne(number);
+    }
     setLoader(false);
   };
 
@@ -322,18 +339,89 @@ const AllTasksToday = () => {
 
   let items = [];
   let pagesCount = Math.ceil(dataMyTable.length / 10);
-
   if (pagesCount > 1) {
-    for (let number = 1; number <= pagesCount; number++) {
-      items.push(
-        <Pagination.Item
-          key={number}
-          onClick={() => handleCountPag(number)}
-          active={number === countOne}
-        >
-          {number}
-        </Pagination.Item>
-      );
+    items = [];
+
+    if (pagesCount <= 5) {
+      items = [];
+      for (let number = 1; number <= pagesCount; number++) {
+        items.push(
+          <Pagination.Item
+            key={number}
+            onClick={() => handleCountPag(number)}
+            active={number === countOne}
+          >
+            {number}
+          </Pagination.Item>
+        );
+      }
+    } else {
+      if (pagesCount - countOne < 0) {
+        setCountOne(pagesCount - 1);
+      }
+      if (countOne <= 4) {
+        items = [];
+        for (let number = 1; number < 4; number++) {
+          items.push(
+            <Pagination.Item
+              key={number}
+              onClick={() => handleCountPag(number)}
+              active={number === countOne}
+            >
+              {number}
+            </Pagination.Item>
+          );
+        }
+
+        items.push(<Pagination.Next onClick={() => handleCountPag('next')} />);
+        items.push(<Pagination.Last onClick={() => handleCountPag('last')} />);
+      }
+
+      if (pagesCount - countOne <= 4) {
+        items = [];
+
+        items.push(
+          <Pagination.First onClick={() => handleCountPag('first')} />
+        );
+        items.push(<Pagination.Prev onClick={() => handleCountPag('prev')} />);
+        for (let number = countOne; number < countOne + 4; number++) {
+          if (number <= pagesCount) {
+            items.push(
+              <Pagination.Item
+                key={number}
+                onClick={() => handleCountPag(number)}
+                active={number === countOne}
+              >
+                {number}
+              </Pagination.Item>
+            );
+          }
+        }
+      } else {
+        items = [];
+        if (countOne >= 5) {
+          items.push(
+            <Pagination.First onClick={() => handleCountPag('first')} />
+          );
+          items.push(
+            <Pagination.Prev onClick={() => handleCountPag('prev')} />
+          );
+        }
+
+        for (let number = countOne; number < countOne + 4; number++) {
+          items.push(
+            <Pagination.Item
+              key={number}
+              onClick={() => handleCountPag(number)}
+              active={number === countOne}
+            >
+              {number}
+            </Pagination.Item>
+          );
+        }
+        items.push(<Pagination.Next onClick={() => handleCountPag('next')} />);
+        items.push(<Pagination.Last onClick={() => handleCountPag('last')} />);
+      }
     }
   }
 
@@ -590,7 +678,16 @@ const AllTasksToday = () => {
               <h1 className="pt-2 pb-4">{t('tasks.alltaskslist')}</h1>
             </div>
 
-            <div className="col-md-6 text-end">{userAction.clickedDate}</div>
+            <div className="col-md-6 text-end">
+              <input
+                className="form-control form-control form-control-solid "
+                type="search"
+                name="description"
+                placeholder={t('search')}
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
           </div>
 
           {dataMyTable.length > 0 ? (
