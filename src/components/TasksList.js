@@ -7,13 +7,14 @@ import { Link } from 'react-router-dom';
 import {
   ADDEventUrl,
   AdminChekUrl,
+  generateKey,
   GetUserDateClickUrl,
   globalURL,
   TaskAddUrl,
   TaskEditUrl,
 } from '../service';
 import { AiOutlineCheck, AiOutlineEdit, AiOutlinePlus } from 'react-icons/ai';
-import { Button, Modal } from 'react-bootstrap';
+import { Button, Modal, Pagination } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import {
   HandleClickDateUser,
@@ -24,7 +25,9 @@ import { HiOutlineArrowNarrowLeft } from 'react-icons/hi';
 import { useTranslation } from 'react-i18next';
 import { MultiSelect } from 'react-multi-select-component';
 import LoaderPage from './LoaderPage';
-// import DataTable from 'react-data-table-component';
+import SortComp from './SortComp';
+import { Table, Thead, Tbody, Tr, Th, Td } from 'react-super-responsive-table';
+import { BsSearch } from 'react-icons/bs';
 
 const TasksList = () => {
   const [end, setEndTime] = useState('');
@@ -41,6 +44,10 @@ const TasksList = () => {
   const [editedName, setEditedName] = useState('');
   const [statuss, setStatuss] = useState(false);
   const [loader, setLoader] = useState(false);
+  const [dataMyTable, setDataMyTable] = useState([]);
+  const [countOne, setCountOne] = useState(1);
+  const [sortDesc, setSortDesc] = useState(false);
+  const [search, setSearch] = useState('');
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -198,10 +205,6 @@ const TasksList = () => {
   const handleClickEdit = (id) => {
     setTaskId(id);
     setClickEdit(true);
-    // let thisTask = userAction.clickDate.filter(
-    //   (element) => element.id === setTaskId
-    // );
-    // setEditedName(thisTask.desc);
   };
 
   const handleClickPlus = (id) => {
@@ -328,6 +331,285 @@ const TasksList = () => {
       seconds.substr(-2);
     return formattedTime;
   };
+
+  const handleCountPag = (number) => {
+    setLoader(true);
+    if (number === 'next') {
+      if (countOne + 4 <= Math.ceil(dataMyTable.length / 10)) {
+        setCountOne(countOne + 4);
+      }
+    } else if (number === 'prev') {
+      if (countOne - 4 > 0) {
+        setCountOne(countOne - 4);
+      }
+    } else if (number === 'first') {
+      setCountOne(1);
+    } else if (number === 'last') {
+      // let a = Math.ceil(dataMyTable.length / 10) * 10 + 1;
+      setCountOne(Math.ceil(dataMyTable.length / 10));
+      // console.log(countOne);
+    } else {
+      setCountOne(number);
+    }
+    setLoader(false);
+  };
+
+  const handleSearch = (e) => {
+    setSearch(e.target.value);
+
+    if (search.length > 0) {
+      const arr = [...userAction.clickDate];
+
+      console.log(search);
+      setDataMyTable(
+        arr.filter(
+          (a) =>
+            a.desc.toLowerCase().indexOf(e.target.value) > -1 ||
+            a.start_date.toLowerCase().indexOf(e.target.value) > -1 ||
+            a.end_date.toLowerCase().indexOf(e.target.value) > -1
+        )
+      );
+    }
+  };
+
+  function handleDesc(arrow) {
+    if (arrow === 'top') {
+      const arr = [...dataMyTable];
+      setDataMyTable(arr.sort((a, b) => a.desc.localeCompare(b.desc)));
+    }
+    if (arrow === 'bottom') {
+      const arr = [...dataMyTable];
+      setDataMyTable(arr.sort((a, b) => b.desc.localeCompare(a.desc)));
+    }
+
+    setSortDesc(!sortDesc);
+  }
+
+  const handleUser = (arrow) => {
+    if (arrow === 'top') {
+      const arr = [...dataMyTable];
+      setDataMyTable(arr.sort((a, b) => a.users[0].localeCompare(b.users[0])));
+    }
+    if (arrow === 'bottom') {
+      const arr = [...dataMyTable];
+      setDataMyTable(arr.sort((a, b) => b.users[0].localeCompare(a.users[0])));
+    }
+    setSortDesc(!sortDesc);
+  };
+
+  const handleSts = (arrow) => {
+    console.log(arrow);
+    if (arrow === 'top') {
+      const arr = [...dataMyTable];
+      setDataMyTable(arr.sort((a, b) => a.status - b.status));
+    }
+    if (arrow === 'bottom') {
+      const arr = [...dataMyTable];
+      setDataMyTable(arr.sort((a, b) => b.status - a.status));
+    }
+    setSortDesc(!sortDesc);
+  };
+  const handleStart = (arrow) => {
+    if (arrow === 'top') {
+      const arr = [...dataMyTable];
+      setDataMyTable(
+        arr.sort(
+          (a, b) =>
+            `${
+              a.start_date.slice(0, 4) +
+              a.start_date.slice(5, 7) +
+              a.start_date.slice(8, 9)
+            }` -
+            `${
+              b.start_date.slice(0, 4) +
+              b.start_date.slice(5, 7) +
+              b.start_date.slice(8, 9)
+            }`
+        )
+      );
+    }
+    if (arrow === 'bottom') {
+      const arr = [...dataMyTable];
+      setDataMyTable(
+        arr.sort(
+          (b, a) =>
+            `${
+              a.start_date.slice(0, 4) +
+              a.start_date.slice(5, 7) +
+              a.start_date.slice(8, 9)
+            }` -
+            `${
+              b.start_date.slice(0, 4) +
+              b.start_date.slice(5, 7) +
+              b.start_date.slice(8, 9)
+            }`
+        )
+      );
+    }
+
+    setSortDesc(!sortDesc);
+  };
+  const handleEnd = (arrow) => {
+    if (arrow === 'top') {
+      const arr = [...dataMyTable];
+      setDataMyTable(
+        arr.sort(
+          (a, b) =>
+            `${
+              a.start_date.slice(0, 4) +
+              a.start_date.slice(5, 7) +
+              a.start_date.slice(8, 9)
+            }` -
+            `${
+              b.start_date.slice(0, 4) +
+              b.start_date.slice(5, 7) +
+              b.start_date.slice(8, 9)
+            }`
+        )
+      );
+    }
+    if (arrow === 'bottom') {
+      const arr = [...dataMyTable];
+      setDataMyTable(
+        arr.sort(
+          (b, a) =>
+            `${
+              a.start_date.slice(0, 4) +
+              a.start_date.slice(5, 7) +
+              a.start_date.slice(8, 9)
+            }` -
+            `${
+              b.start_date.slice(0, 4) +
+              b.start_date.slice(5, 7) +
+              b.start_date.slice(8, 9)
+            }`
+        )
+      );
+    }
+    setSortDesc(!sortDesc);
+  };
+
+  let items = [];
+  let pagesCount = Math.ceil(dataMyTable.length / 10);
+  if (pagesCount > 1) {
+    items = [];
+
+    if (pagesCount <= 5) {
+      items = [];
+      for (let number = 1; number <= pagesCount; number++) {
+        items.push(
+          <Pagination.Item
+            key={number}
+            onClick={() => handleCountPag(number)}
+            active={number === countOne}
+          >
+            {number}
+          </Pagination.Item>
+        );
+      }
+    } else {
+      if (pagesCount - countOne < 0) {
+        setCountOne(pagesCount - 1);
+      }
+      if (countOne <= 4) {
+        items = [];
+        for (let number = 1; number < 4; number++) {
+          items.push(
+            <Pagination.Item
+              key={number}
+              onClick={() => handleCountPag(number)}
+              active={number === countOne}
+            >
+              {number}
+            </Pagination.Item>
+          );
+        }
+
+        items.push(
+          <Pagination.Next
+            key={generateKey('Next')}
+            onClick={() => handleCountPag('next')}
+          />
+        );
+        items.push(
+          <Pagination.Last
+            key={generateKey('Last')}
+            onClick={() => handleCountPag('last')}
+          />
+        );
+      }
+
+      if (pagesCount - countOne <= 4) {
+        items = [];
+
+        items.push(
+          <Pagination.First
+            key={generateKey('First')}
+            onClick={() => handleCountPag('first')}
+          />
+        );
+        items.push(
+          <Pagination.Prev
+            key={generateKey('Prev')}
+            onClick={() => handleCountPag('prev')}
+          />
+        );
+        for (let number = countOne; number < countOne + 4; number++) {
+          if (number <= pagesCount) {
+            items.push(
+              <Pagination.Item
+                key={number}
+                onClick={() => handleCountPag(number)}
+                active={number === countOne}
+              >
+                {number}
+              </Pagination.Item>
+            );
+          }
+        }
+      } else {
+        items = [];
+        if (countOne >= 5) {
+          items.push(
+            <Pagination.First
+              key={generateKey('First')}
+              onClick={() => handleCountPag('first')}
+            />
+          );
+          items.push(
+            <Pagination.Prev
+              key={generateKey('Prev')}
+              onClick={() => handleCountPag('prev')}
+            />
+          );
+        }
+
+        for (let number = countOne; number < countOne + 4; number++) {
+          items.push(
+            <Pagination.Item
+              key={number}
+              onClick={() => handleCountPag(number)}
+              active={number === countOne}
+            >
+              {number}
+            </Pagination.Item>
+          );
+        }
+        items.push(
+          <Pagination.Next
+            key={generateKey('Next')}
+            onClick={() => handleCountPag('next')}
+          />
+        );
+        items.push(
+          <Pagination.Last
+            key={generateKey('Last')}
+            onClick={() => handleCountPag('last')}
+          />
+        );
+      }
+    }
+  }
 
   const compareDate = () => {
     const today = new Date();
@@ -563,6 +845,16 @@ const TasksList = () => {
     localStorage.setItem('compare', compareDate());
   }, []);
 
+  useEffect(() => {
+    if (userAction.clickDate) {
+      if (userAction.clickDate.length > 0) {
+        setDataMyTable([]);
+        setDataMyTable(userAction.clickDate);
+        // console.log(dataMyTable);
+      }
+    }
+  }, [userAction.clickDate]);
+
   return (
     <>
       <div className="container">
@@ -585,6 +877,20 @@ const TasksList = () => {
 
             <div className="col-md-3 text-end">{userAction.clickedDate}</div>
 
+            {dataMyTable.length > 0 ? (
+              <div className="col-md-6 text-end search">
+                <input
+                  className="form-control form-control form-control-solid my-2"
+                  type="search"
+                  name="description"
+                  placeholder={t('search')}
+                  value={search}
+                  onChange={handleSearch}
+                />
+                <BsSearch className="icon" />
+              </div>
+            ) : null}
+
             {localStorage.getItem('compare') === 'true' ? (
               <div className="col-md-3 text-end">
                 <button
@@ -596,159 +902,207 @@ const TasksList = () => {
               </div>
             ) : null}
           </div>
-          {userAction.clickDate.length > 0 ? (
-            <div className="table-responsive">
-              <table className="table table-bordered">
-                <thead>
-                  <tr>
-                    <th scope="col">№</th>
-                    <th scope="col"> {t('tasks.desc')}</th>
-                    <th scope="col"> {t('tasks.linked')}</th>
-                    <th scope="col">{t('tasks.files')}</th>
-                    <th scope="col">{t('tasks.start')}</th>
-                    <th scope="col">{t('tasks.end')}</th>
-                    <th scope="col">{t('tasks.status')}</th>
-                    <th scope="col">{t('tasks.hist')}</th>
-                    <th scope="col">{t('tasks.plus')}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {userAction.clickDate.map((e, index) => (
-                    <tr key={index}>
-                      <th scope="row" className={e.isAdmin ? 'rib' : null}>
-                        {e.id}
-                      </th>
-                      <td>{e.desc}</td>
-                      <td>
-                        {e.users
-                          ? e.users.map((user, i) => (
-                              <span key={i} className="badge bg-secondary">
-                                {user}
-                              </span>
-                            ))
-                          : null}
-                      </td>
-                      <td className="iconDiv">
-                        {e.attachments.length > 0 ? (
-                          e.attachments.map((e, i) => (
-                            <a
-                              key={i}
-                              href={globalURL + e.path}
-                              target="_blank"
-                              download
-                              rel="noreferrer"
-                            >
-                              <span title={e.key}>
-                                <FileIcon
-                                  extension={e.ext}
-                                  {...defaultStyles[e.ext]}
-                                />
-                              </span>
-                            </a>
-                          ))
-                        ) : (
-                          <p>{t('tasks.fileNo')}</p>
-                        )}
-                      </td>
-                      <td>{e.start_date}</td>
-                      <td>{e.end_date}</td>
-
-                      <td className="sts">
-                        <div
-                          className={
-                            e.status === 2
-                              ? 'badge bg-warning'
-                              : e.status === 1
-                              ? 'badge bg-danger text-white'
-                              : e.status === 3
-                              ? 'badge bg-info text-white'
-                              : e.status === 4
-                              ? 'badge bg-success text-white'
-                              : 'badge bg-dark text-white'
-                          }
-                        >
-                          {e.status === 2
-                            ? t('calendar.bjdti')
-                            : e.status === 1
-                            ? t('calendar.bjdm')
-                            : e.status === 3
-                            ? t('calendar.bjd')
-                            : e.status === 4
-                            ? 'Tasdiqlandi'
-                            : e.status === 5
-                            ? 'Kechikdi'
-                            : t('calendar.no')}
-                        </div>
-                      </td>
-                      <td className="history text-center ">
-                        {e.history.length > 0 ? (
-                          <>
-                            <button
-                              onClick={() => handleClickHist(e.history)}
-                              className="btn btn-link btn-hist"
-                            >
-                              {e.history[e.history.length - 1].desc}
-                            </button>
-                          </>
-                        ) : (
-                          <p>{t('tasks.infoNo')}</p>
-                        )}
-                      </td>
-                      {/* <td className="text-center">
-                        <button
-                          onClick={() => handleClickPlus(e.id)}
-                          className="btn btn-outline-opus d-flex justify-content-between align-items-center mx-auto"
-                        >
-                          <AiOutlinePlus />
-                        </button>
-                      </td> */}
-
-                      <td className="text-center">
-                        <div className="row flex-md-wrap">
-                          <div className="col-12 m-1">
-                            <button
-                              onClick={() => handleClickPlus(e.id)}
-                              className="btn btn-outline-opus d-flex justify-content-between align-items-center mx-auto"
-                            >
-                              <AiOutlinePlus />
-                            </button>
+          {dataMyTable.length > 0 ? (
+            <>
+              <Table className="borderT">
+                <Thead>
+                  <Tr>
+                    <Th>№</Th>
+                    <Th>
+                      <div
+                        onClick={() => handleDesc(sortDesc ? 'top' : 'bottom')}
+                        className="headerTab"
+                      >
+                        {t('tasks.desc')}{' '}
+                        <SortComp isActive={sortDesc} handleDesc={handleDesc} />
+                      </div>
+                    </Th>
+                    <Th className="user">
+                      <div
+                        onClick={() => handleUser(sortDesc ? 'top' : 'bottom')}
+                        className="headerTab"
+                      >
+                        {t('tasks.linked')}{' '}
+                        <SortComp isActive={sortDesc} handleUser={handleUser} />
+                      </div>
+                    </Th>
+                    <Th className="file">{t('tasks.files')}</Th>
+                    <Th className="time">
+                      <div
+                        onClick={() => handleStart(sortDesc ? 'top' : 'bottom')}
+                        className="headerTab"
+                      >
+                        {t('tasks.start')}{' '}
+                        <SortComp
+                          isActive={sortDesc}
+                          handleStart={handleStart}
+                        />
+                      </div>
+                    </Th>
+                    <Th className="time">
+                      <div
+                        onClick={() => handleEnd(sortDesc ? 'top' : 'bottom')}
+                        className="headerTab"
+                      >
+                        {t('tasks.end')}
+                        <SortComp isActive={sortDesc} handleEnd={handleEnd} />
+                      </div>
+                    </Th>
+                    <Th className="stat">
+                      <div
+                        onClick={() => handleSts(sortDesc ? 'top' : 'bottom')}
+                        className="headerTab "
+                      >
+                        {t('tasks.status')}{' '}
+                        <SortComp isActive={sortDesc} handleSts={handleSts} />
+                      </div>
+                    </Th>
+                    <Th className="hist">{t('tasks.hist')}</Th>
+                    <Th className="plus">{t('tasks.plus')}</Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {dataMyTable
+                    .slice(countOne * 10 - 10, countOne * 10)
+                    .map((e, i) => (
+                      <Tr key={i}>
+                        <Td className={e.isAdmin ? 'rib' : null}>{e.id}</Td>
+                        <Td>{e.desc}</Td>
+                        <Td>
+                          {e.users
+                            ? e.users.map((user, i) => (
+                                <span
+                                  key={i}
+                                  className="badge badge-pill bg-secondary"
+                                >
+                                  {user}
+                                </span>
+                              ))
+                            : null}
+                        </Td>
+                        <Td>
+                          <div className="iconDiv">
+                            {e.attachments.length > 0 ? (
+                              e.attachments.map((e, i) => (
+                                <a
+                                  key={i}
+                                  href={globalURL + e.path}
+                                  target="_blank"
+                                  download
+                                  rel="noreferrer"
+                                >
+                                  <span title={e.key}>
+                                    <FileIcon
+                                      extension={e.ext}
+                                      {...defaultStyles[e.ext]}
+                                    />
+                                  </span>
+                                </a>
+                              ))
+                            ) : (
+                              <p>{t('tasks.fileNo')}</p>
+                            )}
                           </div>
-                          {localStorage.getItem('role') === 'admin' ||
-                          localStorage.getItem('role') === 'adminClicked' ? (
+                        </Td>
+
+                        <Td>{e.start_date}</Td>
+                        <Td>{e.end_date}</Td>
+                        <Td className="sts">
+                          {' '}
+                          <div
+                            className={
+                              e.status === 2
+                                ? 'badge bg-warning'
+                                : e.status === 1
+                                ? 'badge bg-danger text-white'
+                                : e.status === 3
+                                ? 'badge bg-info text-white'
+                                : e.status === 4
+                                ? 'badge bg-success text-white'
+                                : 'badge bg-dark text-white'
+                            }
+                          >
+                            {e.status === 2
+                              ? t('calendar.bjdti')
+                              : e.status === 1
+                              ? t('calendar.bjdm')
+                              : e.status === 3
+                              ? t('calendar.bjd')
+                              : e.status === 4
+                              ? t('calendar.tasdiq')
+                              : e.status === 5
+                              ? t('calendar.dead')
+                              : t('calendar.no')}
+                          </div>
+                        </Td>
+                        <Td className="history text-center ">
+                          {' '}
+                          {e.history.length > 0 ? (
                             <>
-                              {e.status === 3 ? (
+                              <button
+                                onClick={() => handleClickHist(e.history)}
+                                className="btn btn-link btn-hist"
+                              >
+                                {e.history[e.history.length - 1].desc}
+                              </button>
+                            </>
+                          ) : (
+                            <p>{t('tasks.infoNo')}</p>
+                          )}
+                        </Td>
+                        <Td className="text-center">
+                          <div className="row flex-md-wrap">
+                            <div className="col-12 m-1">
+                              <button
+                                onClick={() => handleClickPlus(e.id)}
+                                className="btn btn-outline-opus d-flex justify-content-between align-items-center mx-auto"
+                              >
+                                <AiOutlinePlus />
+                              </button>
+                            </div>
+                            {localStorage.getItem('role') === 'admin' ||
+                            localStorage.getItem('role') === 'adminClicked' ? (
+                              <>
+                                {e.status === 3 ? (
+                                  <div className="col-12 m-1">
+                                    <button
+                                      onClick={() => handleChack(e.id)}
+                                      className="btn btn-outline-opus d-flex justify-content-between align-items-center mx-auto"
+                                    >
+                                      <AiOutlineCheck />
+                                    </button>
+                                  </div>
+                                ) : null}
+                              </>
+                            ) : null}
+                            {localStorage.getItem('role') === 'admin' ||
+                            localStorage.getItem('role') === 'adminClicked' ||
+                            !e.isAdmin ? (
+                              <>
                                 <div className="col-12 m-1">
                                   <button
-                                    onClick={() => handleChack(e.id)}
+                                    onClick={() => handleClickEdit(e.id)}
                                     className="btn btn-outline-opus d-flex justify-content-between align-items-center mx-auto"
                                   >
-                                    <AiOutlineCheck />
+                                    <AiOutlineEdit />
                                   </button>
                                 </div>
-                              ) : null}
-                            </>
-                          ) : null}
-                          {localStorage.getItem('role') === 'admin' ||
-                          localStorage.getItem('role') === 'adminClicked' ||
-                          !e.isAdmin ? (
-                            <>
-                              <div className="col-12 m-1">
-                                <button
-                                  onClick={() => handleClickEdit(e.id)}
-                                  className="btn btn-outline-opus d-flex justify-content-between align-items-center mx-auto"
-                                >
-                                  <AiOutlineEdit />
-                                </button>
-                              </div>
-                            </>
-                          ) : null}
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                              </>
+                            ) : null}
+                          </div>
+                        </Td>
+                      </Tr>
+                    ))}
+                </Tbody>
+              </Table>
+
+              <br />
+              {pagesCount > 1 ? (
+                <Pagination variant="btn-opus">{items}</Pagination>
+              ) : null}
+
+              <br />
+            </>
           ) : (
             <h2 className="text-center py-2 h4">{t('tasks.noGetInfo')}</h2>
           )}

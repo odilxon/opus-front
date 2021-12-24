@@ -5,11 +5,13 @@ import { useNavigate } from 'react-router';
 import {
   ADDEventUrl,
   AdminChekUrl,
+  generateKey,
   GetUserDateClickUrl,
   globalURL,
   TaskEditUrl,
 } from '../../service';
 import { AiOutlineCheck, AiOutlineEdit, AiOutlinePlus } from 'react-icons/ai';
+import { BsSearch } from 'react-icons/bs';
 import { Button, Modal, Pagination } from 'react-bootstrap';
 // import { Button, Modal } from 'react-bootstrap';
 import { toast } from 'react-toastify';
@@ -220,6 +222,24 @@ const AllTasksToday = () => {
     setLoader(false);
   };
 
+  const handleSearch = (e) => {
+    setSearch(e.target.value);
+
+    if (search.length > 0) {
+      const arr = [...userAction.clickDate];
+
+      console.log(search);
+      setDataMyTable(
+        arr.filter(
+          (a) =>
+            a.desc.toLowerCase().indexOf(e.target.value) > -1 ||
+            a.start_date.toLowerCase().indexOf(e.target.value) > -1 ||
+            a.end_date.toLowerCase().indexOf(e.target.value) > -1
+        )
+      );
+    }
+  };
+
   const handleDesc = (arrow) => {
     if (arrow === 'top') {
       const arr = [...dataMyTable];
@@ -373,17 +393,35 @@ const AllTasksToday = () => {
           );
         }
 
-        items.push(<Pagination.Next onClick={() => handleCountPag('next')} />);
-        items.push(<Pagination.Last onClick={() => handleCountPag('last')} />);
+        items.push(
+          <Pagination.Next
+            key={generateKey('Next')}
+            onClick={() => handleCountPag('next')}
+          />
+        );
+        items.push(
+          <Pagination.Last
+            key={generateKey('Last')}
+            onClick={() => handleCountPag('last')}
+          />
+        );
       }
 
       if (pagesCount - countOne <= 4) {
         items = [];
 
         items.push(
-          <Pagination.First onClick={() => handleCountPag('first')} />
+          <Pagination.First
+            key={generateKey('First')}
+            onClick={() => handleCountPag('first')}
+          />
         );
-        items.push(<Pagination.Prev onClick={() => handleCountPag('prev')} />);
+        items.push(
+          <Pagination.Prev
+            key={generateKey('Prev')}
+            onClick={() => handleCountPag('prev')}
+          />
+        );
         for (let number = countOne; number < countOne + 4; number++) {
           if (number <= pagesCount) {
             items.push(
@@ -401,10 +439,16 @@ const AllTasksToday = () => {
         items = [];
         if (countOne >= 5) {
           items.push(
-            <Pagination.First onClick={() => handleCountPag('first')} />
+            <Pagination.First
+              key={generateKey('First')}
+              onClick={() => handleCountPag('first')}
+            />
           );
           items.push(
-            <Pagination.Prev onClick={() => handleCountPag('prev')} />
+            <Pagination.Prev
+              key={generateKey('Prev')}
+              onClick={() => handleCountPag('prev')}
+            />
           );
         }
 
@@ -419,8 +463,18 @@ const AllTasksToday = () => {
             </Pagination.Item>
           );
         }
-        items.push(<Pagination.Next onClick={() => handleCountPag('next')} />);
-        items.push(<Pagination.Last onClick={() => handleCountPag('last')} />);
+        items.push(
+          <Pagination.Next
+            key={generateKey('Next')}
+            onClick={() => handleCountPag('next')}
+          />
+        );
+        items.push(
+          <Pagination.Last
+            key={generateKey('Last')}
+            onClick={() => handleCountPag('last')}
+          />
+        );
       }
     }
   }
@@ -452,11 +506,7 @@ const AllTasksToday = () => {
       return false;
     }
   };
-  // const backCard = () => {
-  //   localStorage.removeItem('clickedUserId');
-  //   localStorage.setItem('role', 'admin');
-  //   navigate('/admin');
-  // };
+
   const FetchDateInfos = async () => {
     setLoader(true);
     await axios({
@@ -658,12 +708,10 @@ const AllTasksToday = () => {
     localStorage.setItem('compare', compareDate());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
   useEffect(() => {
     if (userAction.clickDate) {
       if (userAction.clickDate.length > 0) {
         setDataMyTable([]);
-
         setDataMyTable(userAction.clickDate);
         // console.log(dataMyTable);
       }
@@ -678,16 +726,19 @@ const AllTasksToday = () => {
               <h1 className="pt-2 pb-4">{t('tasks.alltaskslist')}</h1>
             </div>
 
-            <div className="col-md-6 text-end">
-              <input
-                className="form-control form-control form-control-solid "
-                type="search"
-                name="description"
-                placeholder={t('search')}
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            </div>
+            {dataMyTable.length > 0 || userAction.clickDate.length > 0 ? (
+              <div className="col-md-6 text-end search">
+                <input
+                  className="form-control form-control form-control-solid my-2"
+                  type="search"
+                  name="description"
+                  placeholder={t('search')}
+                  value={search}
+                  onChange={handleSearch}
+                />
+                <BsSearch className="icon" />
+              </div>
+            ) : null}
           </div>
 
           {dataMyTable.length > 0 ? (

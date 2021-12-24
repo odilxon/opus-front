@@ -75,12 +75,13 @@ th {
 //   border-collapse: collapse;
 //   border: 1px solid #ccc !important;
 // }
-table {
+
+table.borderT {
   border-collapse: collapse;
 }
-table,
-th,
-td {
+table.borderT,
+.borderT th,
+.borderT td {
   border: 1px solid #ccc !important;
 }
 @media screen and (max-width: 40em) {

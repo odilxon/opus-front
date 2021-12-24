@@ -106,3 +106,15 @@
     text-decoration: none !important;
   }
 }
+.search {
+  position: relative;
+
+  .icon {
+    position: absolute;
+    top: 20px;
+    left: 24px;
+  }
+  input {
+    padding-left: 40px;
+  }
+}

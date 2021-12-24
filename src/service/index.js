@@ -13,3 +13,7 @@ export const AdminChekUrl = `${globalURL}user/task/validate`;
 export const UserAddUrl = `${globalURL}user/add`;
 export const TaskEditUrl = `${globalURL}user/task/edit`;
 // export const PostPhotoUrl = `${globalURL}/`;
+
+export const generateKey = (pre) => {
+  return `${pre}_${new Date().getTime()}`;
+};
