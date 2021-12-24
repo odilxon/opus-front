@@ -232,9 +232,10 @@ const AllTasksToday = () => {
       setDataMyTable(
         arr.filter(
           (a) =>
-            a.desc.toLowerCase().indexOf(e.target.value) > -1 ||
-            a.start_date.toLowerCase().indexOf(e.target.value) > -1 ||
-            a.end_date.toLowerCase().indexOf(e.target.value) > -1
+            a.desc.toLowerCase().indexOf(e.target.value.toLowerCase()) > -1 ||
+            a.start_date.toLowerCase().indexOf(e.target.value.toLowerCase()) >
+              -1 ||
+            a.end_date.toLowerCase().indexOf(e.target.value.toLowerCase()) > -1
         )
       );
     }
@@ -381,6 +382,7 @@ const AllTasksToday = () => {
       }
       if (countOne <= 4) {
         items = [];
+
         for (let number = 1; number < 4; number++) {
           items.push(
             <Pagination.Item
@@ -406,7 +408,6 @@ const AllTasksToday = () => {
           />
         );
       }
-
       if (pagesCount - countOne <= 4) {
         items = [];
 
@@ -437,7 +438,7 @@ const AllTasksToday = () => {
         }
       } else {
         items = [];
-        if (countOne >= 5) {
+        if (countOne > 1) {
           items.push(
             <Pagination.First
               key={generateKey('First')}
