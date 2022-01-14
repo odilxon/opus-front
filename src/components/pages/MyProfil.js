@@ -212,7 +212,7 @@ const MyProfil = () => {
         );
         //setInputList([...inputList, { tel: '+998993286330' }]);
         //setInputList(data.phones);
-        console.log(inputList);
+        // console.log(inputList);
         setLoader(false);
       })
       .catch((err) => {

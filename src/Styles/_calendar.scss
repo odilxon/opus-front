@@ -49,33 +49,9 @@
   white-space: nowrap;
 
   @media (min-width: 768px) {
-    max-width: 180px !important;
+    max-width: 150px !important;
   }
 }
-// .table {
-//   @media (min-width: 991px) {
-//     overflow: hidden;
-//     width: 100%;
-//     min-height: 50px;
-//   }
-//   td,
-//   th {
-//     text-align: center;
-//   }
-
-//   .history {
-//     // position: relative;
-
-//     .history_table {
-//       table {
-//         width: 300px;
-//         @media (min-width: 768px) {
-//           width: 500px;
-//         }
-//       }
-//     }
-//   }
-// }
 
 .iconDiv {
   display: flex;
@@ -94,32 +70,6 @@
   }
 }
 
-// .history {
-//   position: relative;
-//   .history-table {
-//     transition: all 0.3s ease;
-//     transform: scale(0);
-//     position: absolute;
-//     background-color: #fff;
-//     top: 20px;
-//     left: -400px;
-//     z-index: 100;
-//     .date {
-//       font-size: 12px;
-//     }
-//     @media (min-width: 991px) {
-//       width: 600px;
-//     }
-//   }
-//   &:hover {
-//     .history-table {
-//       transform: scale(1);
-//     }
-//   }
-// .history-table.show {
-//   transform: scale(1);
-// }
-// }
 @media (min-width: 1200px) {
   .modal-dialog {
     max-width: 900px !important;
@@ -139,14 +89,32 @@
     width: 30px;
     height: 30px;
     position: absolute;
-    bottom: -6px;
-    right: 10px;
+    top: -8px;
+    right: -8px;
     background-color: $base-color;
-    clip-path: polygon(0 0, 0 100%, 100% 100%);
+    clip-path: polygon(100% 0, 0 0, 100% 100%);
+    @media (min-width: 991px) {
+      top: inherit;
+      bottom: -6px;
+      right: 10px;
+      clip-path: polygon(0 0, 0 100%, 100% 100%);
+    }
   }
 }
 .fc-scrollgrid-sync-inner {
   a {
     text-decoration: none !important;
+  }
+}
+.search {
+  position: relative;
+
+  .icon {
+    position: absolute;
+    top: 20px;
+    left: 24px;
+  }
+  input {
+    padding-left: 40px;
   }
 }

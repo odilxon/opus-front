@@ -4,6 +4,8 @@ const SortComp = (props) => {
   const [top, setTop] = useState(null);
 
   const handleClick = (arrow) => {
+    setTop(props.isActive ? 'top' : 'bottom');
+
     if (arrow === 'top') {
       setTop('top');
       if (props.handleDesc) {
